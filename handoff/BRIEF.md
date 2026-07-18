@@ -31,7 +31,7 @@ These were built during the design phase, after requirements were locked, to wor
 | **`01-app-flow.html`** | End-to-end flow: data/pipeline (thesis note + evidence → 4 pipeline stages → verdict → decision), the screen-to-screen user journey, and the 3-day build timeline mapped to who does what. | Understanding how everything connects before you touch code. Start here if `requirements.md` alone doesn't make the shape of the system click. |
 | **`02-system-architecture.html`** | Layered architecture (Client → API → 4-stage Processing Pipeline → Data → External Services), a component→tech-stack table marking what's **locked** vs **still TBD at design time** vs **cut from this build**, and a full request trace for one Drop & Trace run (PDF drop → API → background task → PyMuPDF/bge-m3 → adjudicator → Postgres write → UI update). | Deciding how to structure the backend. Notable: it flags the frontend framework and the realtime channel (SSE vs polling) as **not yet decided** — that's a real open decision for whoever builds the frontend, not an oversight. |
 | **`03-design-system.html`** | The actual design tokens (CSS custom properties for light/dark, color palette incl. the 4 verdict colors, type system: serif for headers / system sans for body / monospace for data), plus a literal `globals.css` and `tailwind.config.ts` you can copy in. Design principles: quiet-by-default, status readable in 1 second, evidence as a first-class citizen, professional density (not consumer-app spacing). | Skinning the real app — this is meant to be copy-pasted into the actual frontend, not just looked at. |
-| **`04-product-prototype.html`** | The actual 4-screen prototype: **Portfolio Board**, **Drop & Trace**, **Thesis Card**, **Verification Queue** — built using the design system above, with realistic MWG/CPALL data in the layout. | This is the closest thing to "what the finished demo should look like." Treat it as the visual spec for frontend implementation — build the real screens to match this, don't redesign from scratch. |
+| **`04-product-prototype.html`** | The actual 4-screen prototype: **Portfolio Board**, **Drop & Trace**, **Thesis Evidence** (was "Thesis Card"), **Verification Queue** — built using the design system above, with realistic MWG/CPALL data in the layout. **No longer a static mock** — it's been iterated on past the original design-phase snapshot and now has real (if hardcoded) interactivity: data-driven overview stats, sortable/filterable cards, expand/collapse, working tabs. See §11 below before assuming it still matches the original design-phase description. | This is the closest thing to "what the finished demo should look like." Treat it as the visual spec for frontend implementation — build the real screens to match this, don't redesign from scratch. |
 
 Read them in the numbered order (01 → 04): flow, then architecture, then design tokens, then the actual screens.
 
@@ -61,6 +61,8 @@ Read them in the numbered order (01 → 04): flow, then architecture, then desig
   - 🟡 AT_RISK — adversarial models disagree **or** the value sits within ±20% of the threshold.
   - ⚪ STALE/NO_DATA — no fresh evidence within the decay window (≈100 days for quarterly-filing-based claims, ≈30 days for news/event-based claims).
 - **Banned words in any verdict/alert copy**: "buy", "sell", "recommend", "guarantee" (ซื้อ/ขาย/แนะนำ/การันตี) — use neutral phrasing like "thesis is in BROKEN status — REVISIT."
+
+> ⚠️ **Label mismatch, not a spec change.** `04-product-prototype.html` currently *displays* the red state as **AT_RISK** and the amber state as **NEED_REVIEW** instead of the BROKEN/AT_RISK wording above (see §11) — a UI copy decision made during prototype iteration, requested independent of this doc. The underlying rule (thresholds, tolerance bands, decay windows, color meaning) is unchanged. Whoever wires the backend should pick one vocabulary and make the schema, the guardrail doc, and the UI agree before build — don't silently carry both.
 
 ## 7. Two things that are still genuinely unresolved
 
@@ -93,3 +95,24 @@ Hero screen: **Drop & Trace**. Secondary: **Portfolio Board** (real DB-backed). 
 `thesis` (per-stock reasoning) → `claim` (metric, operator, threshold, horizon, `is_load_bearing`) → `verdict` (status, `as_of`, `knowledge_date`, confidence) → `decision` (HOLD/ADD/TRIM/EXIT/REVISIT, human-signed, append-only, references the triggering verdict).
 
 Support tables: `document` (`tier`: public/licensed/inhouse, `can_send_to_llm`), `chunk` (text + embedding + page), `price_daily`, `source_health` (freshness monitor), `entity_map` (multilingual ticker/company alias mapping).
+
+## 11. Prototype iteration log — changes to `04-product-prototype.html` since the design phase
+
+The design-phase snapshot described in §4 got iterated on afterward, in-browser, based on direct feedback on screenshots. This section is the diff summary so a builder doesn't have to re-read the whole file to find out what moved. Everything below is **frontend-only, hardcoded/mock data, no backend behind it** — same "pre-code" status as the rest of this repo.
+
+**Portfolio Board:**
+- Added a **Portfolio Overview panel** above the table: 3 stat tiles (Positions / needs-check data points / average coverage), a tab strip (one tab per position — clicking jumps to and briefly highlights that row, auto-expanding the collapsed group if needed), and a single status donut + legend (count of positions per status, not AUM-weighted — kept deliberately plain per feedback, no toggle).
+- Added a **"Claim Checking" module** — a `check {n}%` badge per row, intentionally a *separate axis* from thesis-health status (it answers "how much of this position's evidence is still unverified," not "is the thesis still true"). Implemented as one isolated `ClaimChecking.compute()` function reading a `POSITIONS` data array, specifically so the blend formula can be retuned later without touching markup.
+- Replaced the **"Load-bearing claim" column** with **"Sector vs Industry (QoQ)"** — country, industry, and a company-vs-industry-sector QoQ delta (pp) — for every row.
+- Removed the ERAA freshness-confirm nudge row, and removed the two long explanatory callout blocks (traffic-light logic + "quiet by default" P1 note) — judged as clutter for a first-glance home page.
+- Subhead replaced with a tagline: **"Thesis Ledger, Identify What Matters Faster with AI-Powered Research."**
+- **CPALL's status changed from INTACT to NEED_REVIEW** (mock judgment call, not backed by new evidence) so the board shows 2-needs-attention instead of 1; BBCA/MAP/HPG are unchanged.
+
+**Thesis Card → renamed "Thesis Evidence":**
+- The ticker/exchange/sector meta line under the stock name was replaced with a plain **"Thesis evidence"** section-bar label.
+- The old numeric Claims list (claim vs. threshold comparisons) was **removed entirely** and replaced with **3 "reason cards"** — the qualitative story for why the position was bought, each with Overview / Why we bought / Sell-or-take-profit criteria, collapsed by default (click to expand). Content is invented/plausible, pending a real thesis note (see B1 in §7 — this makes that test more urgent, not less, since the UI now assumes richer qualitative thesis content exists).
+- Each reason card has: a status + conviction-star badge, a "?" tooltip explaining what the badge/stars mean, an Edit button (visual toggle only, no persistence), and a per-evidence "→ Reference source" link.
+- Added a **Priority & filter toolbar** (filter by load-bearing / needs-review, sort by priority/confidence/conviction) above the reason cards.
+- Added a **"Show more thesis support"** affordance below the 3 cards — expands to a thin "No data available" since there's no 4th reason yet; this is the intended empty-state pattern once real thesis extraction produces a variable number of reasons.
+
+**Terminology rename (applies file-wide, all 4 screens):** the red status label changed **BROKEN → AT_RISK**, and the amber status label changed **AT_RISK → NEED_REVIEW**. Colors and underlying logic are untouched — this was purely a copy/wording change requested during iteration. See the ⚠️ callout in §6 — this is the one change here that actually conflicts with wording used elsewhere in this repo, and needs a deliberate decision (not a silent carry-forward) before backend/schema work starts.

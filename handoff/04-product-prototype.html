@@ -99,10 +99,56 @@
   .pf-meta { font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink-muted); margin-bottom: 0.9rem; display: flex; gap: 1rem; flex-wrap: wrap; }
   .pf-meta b { color: var(--broken-ink); font-weight: 600; }
 
+  /* ===== PORTFOLIO OVERVIEW PANEL =====
+     Kept deliberately plain: 3 headline numbers, a tab per position (jumps to its row),
+     one status donut. No toggles, no dense text — the table below carries the detail. */
+  .pf-overview { display: flex; flex-direction: column; gap: 1.05rem; padding: 1.1rem 1.3rem; border: 1px solid var(--rule); border-radius: var(--r-lg); background: var(--surface); box-shadow: var(--shadow); margin-bottom: 1.1rem; }
+
+  .pfo-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; }
+  @media (max-width: 640px){ .pfo-tiles { grid-template-columns: 1fr; } }
+  .pfo-tile { border: 1px solid var(--rule); border-radius: var(--r-md); padding: 0.7rem 0.95rem; background: var(--sunken); }
+  .pfo-tile.warn { background: var(--broken-tint); border-color: color-mix(in srgb, var(--broken) 28%, transparent); }
+  .pfo-tile.warn .pfo-tile-val { color: var(--broken-ink); }
+  .pfo-tile-lbl { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.02em; color: var(--ink-muted); margin-bottom: 0.3rem; }
+  .pfo-tile-val { font-family: var(--font-serif); font-size: 1.5rem; font-weight: 700; color: var(--ink); }
+  .pfo-tile-val .unit { font-family: var(--font-mono); font-size: 0.68rem; font-weight: 500; opacity: 0.75; margin-left: 0.2rem; }
+
+  .pfo-tabs { display: flex; gap: 0.15rem; border-bottom: 1px solid var(--rule); overflow-x: auto; }
+  .pfo-tab { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--font-mono); font-size: 0.74rem; padding: 0.5rem 0.75rem; border: none; background: none; color: var(--ink-muted); border-bottom: 2px solid transparent; white-space: nowrap; }
+  .pfo-tab .d { width: 0.4rem; height: 0.4rem; border-radius: 50%; flex: 0 0 auto; }
+  .pfo-tab:hover { color: var(--ink); }
+  .pfo-tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+
+  .pfo-chart-row { display: flex; align-items: center; gap: 1.3rem; flex-wrap: wrap; }
+  .donut { width: 116px; height: 116px; border-radius: 50%; flex: 0 0 auto; position: relative; }
+  .donut-center { position: absolute; inset: 17px; border-radius: 50%; background: var(--surface); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; box-shadow: inset 0 0 0 1px var(--rule); }
+  .donut-center .num { font-family: var(--font-mono); font-weight: 700; font-size: 0.9rem; color: var(--ink); }
+  .donut-center .lbl { font-family: var(--font-mono); font-size: 0.56rem; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.04em; margin-top: 0.1rem; }
+
+  .pfo-legend { display: flex; flex-direction: column; gap: 0.4rem; min-width: 0; }
+  .pfo-legend .li { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--ink-2); }
+  .pfo-legend .dot { width: 0.6rem; height: 0.6rem; border-radius: 50%; flex: 0 0 auto; }
+  .pfo-legend .nm { font-weight: 600; color: var(--ink); }
+  .pfo-legend .cnt { color: var(--ink-muted); }
+  .pfo-legend .tk { font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink-muted); }
+
+  /* brief highlight when a tab jumps to its row */
+  @keyframes pfoFlash { 0% { background: var(--accent-tint); } 100% { background: transparent; } }
+  .pf-row.flash { animation: pfoFlash 1.1s ease; }
+
+  /* ===== CLAIM CHECKING MODULE =====
+     Separate axis from thesis-health (INTACT/AT_RISK/NEED_REVIEW/STALE):
+     "how much of this position's evidence is still unverified", not "is the thesis still true".
+     Formula lives in ClaimChecking.compute() in the script below — tune WEIGHTS there, not here. */
+  .cc-badge { display: inline-flex; align-items: center; gap: 0.3rem; font-family: var(--font-mono); font-size: 0.68rem; font-weight: 600; padding: 0.16rem 0.52rem; border-radius: 20px; border: 1px solid; white-space: nowrap; }
+  .cc-badge.low  { color: var(--ink-muted);  border-color: var(--rule-strong); background: var(--sunken); }
+  .cc-badge.mid  { color: var(--accent-warm); border-color: color-mix(in srgb, var(--accent-warm) 45%, transparent); background: color-mix(in srgb, var(--accent-warm) 12%, var(--surface)); }
+  .cc-badge.high { color: var(--broken-ink); border-color: color-mix(in srgb, var(--broken) 40%, transparent); background: var(--broken-tint); }
+
   .board { border: 1px solid var(--rule); border-radius: var(--r-lg); overflow: hidden; background: var(--surface); box-shadow: var(--shadow); }
-  .board-colhead { display: grid; grid-template-columns: 150px 1fr 120px 130px; gap: 0.9rem; padding: 0.55rem 1.1rem; background: var(--sunken); border-bottom: 1px solid var(--rule); font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-muted); }
+  .board-colhead { display: grid; grid-template-columns: 150px 1fr 120px 100px 130px; gap: 0.9rem; padding: 0.55rem 1.1rem; background: var(--sunken); border-bottom: 1px solid var(--rule); font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-muted); }
   .board-colhead .r { text-align: right; }
-  .pf-row { display: grid; grid-template-columns: 150px 1fr 120px 130px; gap: 0.9rem; align-items: center; padding: 0.9rem 1.1rem; border-bottom: 1px solid var(--rule); width: 100%; background: none; border-left: none; border-right: none; border-top: none; text-align: left; }
+  .pf-row { display: grid; grid-template-columns: 150px 1fr 120px 100px 130px; gap: 0.9rem; align-items: center; padding: 0.9rem 1.1rem; border-bottom: 1px solid var(--rule); width: 100%; background: none; border-left: none; border-right: none; border-top: none; text-align: left; }
   .pf-row:last-child { border-bottom: none; }
   .pf-row:hover { background: color-mix(in srgb,var(--accent) 4%,var(--surface)); }
   .pf-row .tk { font-family: var(--font-mono); font-weight: 600; font-size: 0.95rem; letter-spacing: 0.02em; }
@@ -110,14 +156,15 @@
   .pf-claim { font-family: var(--font-serif); font-size: 0.94rem; color: var(--ink); line-height: 1.35; }
   .pf-claim .ref { display: block; font-family: var(--font-mono); font-size: 0.68rem; color: var(--ink-muted); margin-top: 0.15rem; }
   .pf-status { display: flex; justify-content: flex-start; }
+  .pf-check { display: flex; justify-content: flex-start; }
   .pf-metric { text-align: right; }
   .pf-metric .delta { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 0.92rem; font-weight: 600; }
   .pf-metric .delta.neg { color: var(--broken-ink); } .pf-metric .delta.warn { color: var(--risk-ink); } .pf-metric .delta.pos { color: var(--intact-ink); } .pf-metric .delta.mut { color: var(--ink-muted); }
   .pf-metric .base { font-family: var(--font-mono); font-size: 0.66rem; color: var(--ink-muted); margin-top: 0.1rem; }
   @media (max-width: 680px){
     .board-colhead { display: none; }
-    .pf-row { grid-template-columns: 1fr auto; grid-template-areas: "id status" "claim claim" "metric metric"; row-gap: 0.5rem; }
-    .pf-row .pf-id { grid-area: id; } .pf-status { grid-area: status; } .pf-claim { grid-area: claim; } .pf-metric { grid-area: metric; text-align: left; }
+    .pf-row { grid-template-columns: 1fr auto; grid-template-areas: "id status" "claim claim" "check metric"; row-gap: 0.5rem; }
+    .pf-row .pf-id { grid-area: id; } .pf-status { grid-area: status; } .pf-claim { grid-area: claim; } .pf-check { grid-area: check; } .pf-metric { grid-area: metric; text-align: left; }
   }
 
   /* freshness nudge */
@@ -156,20 +203,48 @@
   .thesis-statement { font-family: var(--font-serif); font-size: 1.05rem; line-height: 1.55; color: var(--ink-2); border-left: 3px solid var(--accent-soft); padding: 0.3rem 0 0.3rem 1rem; margin-bottom: 1.5rem; }
   .thesis-statement b { color: var(--ink); font-weight: 600; }
 
-  .claims-label { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.7rem; }
-  .claim-card { border: 1px solid var(--rule); border-radius: var(--r-lg); background: var(--surface); box-shadow: var(--shadow); margin-bottom: 0.9rem; overflow: hidden; }
-  .claim-card.load { border-left: 3px solid var(--broken); }
-  .claim-hd { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; padding: 1rem 1.15rem 0.6rem; }
-  .claim-hd .stmt { font-family: var(--font-serif); font-size: 1rem; line-height: 1.4; }
-  .claim-hd .load-tag { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--broken-ink); border: 1px solid color-mix(in srgb,var(--broken) 35%,transparent); border-radius: var(--r-sm); padding: 0.06rem 0.32rem; margin-left: 0.45rem; white-space: nowrap; vertical-align: middle; }
-  .claim-body { padding: 0 1.15rem 1rem; }
   .compare { display: flex; align-items: baseline; gap: 0.8rem; padding: 0.6rem 0.85rem; background: var(--sunken); border-radius: var(--r-md); margin-bottom: 0.85rem; flex-wrap: wrap; }
   .compare .actual { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 1.35rem; font-weight: 600; }
   .compare .actual.neg { color: var(--broken-ink); } .compare .actual.warn { color: var(--risk-ink); } .compare .actual.pos { color: var(--intact-ink); }
   .compare .vs { font-size: 0.76rem; color: var(--ink-muted); }
   .compare .target { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 1rem; color: var(--ink-2); }
   .compare .horizon { font-family: var(--font-mono); font-size: 0.68rem; color: var(--ink-muted); margin-left: auto; }
-  .ev-label { font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.35rem; }
+
+  /* ===== THESIS EVIDENCE — reason cards (replaces the old numeric Claims list) ===== */
+  .section-bar { background: var(--sunken); border: 1px solid var(--rule); border-radius: var(--r-sm); padding: 0.5rem 1rem; font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-2); text-align: center; margin-bottom: 1.3rem; }
+
+  .rc-toolbar { display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; margin-bottom: 0.9rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--rule); }
+  .rc-toolbar-label { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-muted); }
+  .rc-toolbar .filters { display: flex; gap: 0.35rem; }
+  .rc-sort { margin-left: auto; display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink-muted); }
+  .rc-sort select { font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink); background: var(--surface); border: 1px solid var(--rule-strong); border-radius: var(--r-sm); padding: 0.25rem 0.5rem; }
+
+  .reason-card { border: 1px solid var(--rule); border-radius: var(--r-lg); background: var(--surface); box-shadow: var(--shadow); margin-bottom: 0.9rem; overflow: hidden; }
+  .reason-toggle { width: 100%; display: flex; align-items: center; gap: 0.7rem; padding: 0.9rem 1.1rem; background: none; border: none; text-align: left; cursor: pointer; }
+  .reason-num { flex: 0 0 auto; width: 1.6rem; height: 1.6rem; border-radius: 50%; background: var(--accent-tint); color: var(--accent); font-family: var(--font-mono); font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; }
+  .reason-title-wrap { flex: 1; min-width: 0; }
+  .reason-eyebrow { font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-muted); }
+  .reason-title { font-family: var(--font-serif); font-size: 1rem; font-weight: 600; color: var(--ink); line-height: 1.3; }
+  .reason-title .load-tag { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--broken-ink); border: 1px solid color-mix(in srgb,var(--broken) 35%,transparent); border-radius: var(--r-sm); padding: 0.06rem 0.32rem; margin-left: 0.5rem; white-space: nowrap; vertical-align: middle; }
+  .reason-badge { display: inline-flex; align-items: center; gap: 0.35rem; flex: 0 0 auto; }
+  .reason-badge .stars { font-size: 0.68rem; letter-spacing: 0.02em; color: var(--risk); }
+  .reason-help { flex: 0 0 auto; position: relative; width: 1.15rem; height: 1.15rem; border-radius: 50%; border: 1px solid var(--rule-strong); background: var(--surface); color: var(--ink-muted); font-family: var(--font-mono); font-size: 0.66rem; line-height: 1; display: flex; align-items: center; justify-content: center; }
+  .reason-help:hover { border-color: var(--accent-soft); color: var(--accent); }
+  .reason-help-pop { display: none; position: absolute; top: 1.5rem; right: 0; z-index: 5; width: 220px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r-md); box-shadow: var(--shadow-lift); padding: 0.65rem 0.75rem; font-size: 0.74rem; line-height: 1.45; color: var(--ink-2); font-family: var(--font-sans); text-align: left; white-space: normal; }
+  .reason-help.open .reason-help-pop { display: block; }
+  .reason-edit { flex: 0 0 auto; font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600; color: var(--accent); background: var(--surface); border: 1px solid var(--accent-soft); border-radius: var(--r-sm); padding: 0.25rem 0.55rem; }
+  .reason-edit:hover { background: var(--accent-tint); }
+  .reason-edit.editing { color: var(--intact-ink); border-color: var(--intact); background: var(--intact-tint); }
+  .reason-chev { flex: 0 0 auto; font-size: 0.7rem; color: var(--ink-muted); transition: transform 0.2s; }
+  .reason-card.open .reason-chev { transform: rotate(90deg); }
+  .reason-body { display: none; padding: 0 1.1rem 1.1rem 3.3rem; }
+  .reason-card.open .reason-body { display: block; }
+  .reason-sub { margin-bottom: 0.8rem; }
+  .reason-sub-label { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--accent-soft); margin-bottom: 0.25rem; }
+  .reason-sub-txt { font-size: 0.86rem; color: var(--ink-2); line-height: 1.5; }
+  .reason-sub.sell .reason-sub-label { color: var(--broken-ink); }
+
+  .ev-label { font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-muted); margin: 0.9rem 0 0.35rem; }
   .ev-row { display: flex; align-items: center; gap: 0.65rem; padding: 0.5rem 0; border-top: 1px solid var(--rule); font-size: 0.84rem; }
   .ev-row .tier { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.04em; text-transform: uppercase; padding: 0.1rem 0.38rem; border-radius: var(--r-sm); white-space: nowrap; }
   .ev-row .tier.public { background: var(--accent-tint); color: var(--accent); }
@@ -184,6 +259,14 @@
   .tl-node.stale { background: transparent; border: 1.5px solid var(--stale); }
   .tl-c { width: 12px; height: 1px; background: var(--rule-strong); }
   .tl-d { font-family: var(--font-mono); font-size: 0.64rem; color: var(--ink-muted); margin-left: 0.35rem; }
+
+  .rc-more { width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.4rem; padding: 0.6rem; margin-bottom: 1.3rem; background: none; border: 1px dashed var(--rule-strong); border-radius: var(--r-md); font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-muted); }
+  .rc-more:hover { color: var(--accent); border-color: var(--accent-soft); }
+  .rc-more .chev { transition: transform 0.2s; }
+  .rc-more.open .chev { transform: rotate(180deg); }
+  .rc-more-body { display: none; text-align: center; margin: -0.9rem 0 1.3rem; }
+  .rc-more-body.open { display: block; }
+  .rc-nodata { font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-faint, var(--ink-muted)); opacity: 0.6; padding: 0.5rem; }
 
   /* decision panel */
   .decision-panel { border: 1px solid var(--rule); border-radius: var(--r-lg); background: var(--surface); box-shadow: var(--shadow); margin-top: 1.4rem; overflow: hidden; }
@@ -315,7 +398,23 @@
       <div class="view-head">
         <div class="eyebrow">Alpha Fund · Core Equity · Backtest snapshot Q4 2023</div>
         <h1>Portfolio Board</h1>
-        <div class="sub">เฝ้าดูว่าเหตุผลตอนซื้อยังจริงอยู่ไหม — เรียงแย่สุดขึ้นก่อน ตัวที่ยังปกติพับเก็บ · ภาพ ณ as_of 2023-12-31</div>
+        <div class="sub"><b>Thesis Ledger</b>, Identify What Matters Faster with AI-Powered Research</div>
+      </div>
+
+      <div class="pf-overview">
+        <div class="pfo-tiles" id="pfo-tiles"><!-- Positions / ต้องเช็คตอนนี้ / Coverage — populated from POSITIONS --></div>
+
+        <div class="pfo-tabs" id="pfo-tabs" role="tablist" aria-label="กระโดดไปดู position"><!-- one tab per position, jumps to its row --></div>
+
+        <div class="pfo-chart-row">
+          <div class="donut" id="pfo-donut">
+            <div class="donut-center">
+              <span class="num" id="pfo-donut-num">—</span>
+              <span class="lbl">INTACT</span>
+            </div>
+          </div>
+          <div class="pfo-legend" id="pfo-legend"><!-- verdict breakdown, populated from POSITIONS --></div>
+        </div>
       </div>
 
       <div class="pf-toolbar">
@@ -327,59 +426,56 @@
         </div>
         <span class="sortby">↓ Worst-first</span>
       </div>
-      <div class="pf-meta"><span>6 positions · AUM ฿12,400M</span><span><b>1 needs attention</b></span><span>as_of 2023-12-31 · evidence ≤ 2024-01-29</span></div>
+      <div class="pf-meta"><span>6 positions · AUM ฿12,400M</span><span><b>2 needs attention</b></span><span>as_of 2023-12-31 · evidence ≤ 2024-01-29</span></div>
 
       <div class="board">
         <div class="board-colhead">
-          <span>Position</span><span>Load-bearing claim</span><span>Status</span><span class="r">vs threshold</span>
+          <span>Position</span><span>Sector vs Industry (QoQ)</span><span>Status</span><span>Check</span><span class="r">vs threshold</span>
         </div>
 
-        <button class="pf-row" data-nav="card" aria-label="เปิด Thesis Card ของ MWG">
+        <button class="pf-row" id="row-MWG" data-nav="card" aria-label="เปิด Thesis Card ของ MWG">
           <div class="pf-id"><div class="tk">MWG</div><div class="mk">VN · retail</div></div>
-          <div class="pf-claim">ธุรกิจหลัก ICT/CE หดตัวในสงครามราคา — claim หัวใจแตก<span class="ref">C1 · load-bearing · public + public · as_of Q4'23 · known 2023-11</span></div>
-          <div class="pf-status"><span class="pill broken"><span class="glyph">■</span> BROKEN</span></div>
+          <div class="pf-claim">Vietnam · ICT &amp; Consumer Electronics retail<span class="ref">Q4'23 QoQ: company −4.2% vs industry +1.5% (<span style="color:var(--broken-ink)">Δ −5.7pp</span>)</span></div>
+          <div class="pf-status"><span class="pill broken"><span class="glyph">■</span> AT_RISK</span></div>
+          <div class="pf-check" data-cc="MWG"></div>
           <div class="pf-metric"><div class="delta neg">−21%</div><div class="base">vs ≥ 0% YoY</div></div>
         </button>
 
-        <button class="pf-row" aria-label="CPALL">
+        <button class="pf-row" id="row-CPALL" aria-label="CPALL">
           <div class="pf-id"><div class="tk">CPALL</div><div class="mk">TH · retail</div></div>
-          <div class="pf-claim">SSSG ฟื้นตามท่องเที่ยวไทย — เหตุผลตอนซื้อยังจริง<span class="ref">C1 · public + public (2 issuers) · as_of Q4'23</span></div>
-          <div class="pf-status"><span class="pill intact"><span class="glyph">●</span> INTACT</span></div>
+          <div class="pf-claim">Thailand · Convenience store retail<span class="ref">Q4'23 QoQ: company +1.8% vs industry +2.6% (<span style="color:var(--risk-ink)">Δ −0.8pp</span>)</span></div>
+          <div class="pf-status"><span class="pill risk"><span class="glyph">◆</span> NEED_REVIEW</span></div>
+          <div class="pf-check" data-cc="CPALL"></div>
           <div class="pf-metric"><div class="delta pos">+5.0%</div><div class="base">vs ≥ 3.0%</div></div>
         </button>
-
-        <div class="nudge">
-          <span class="pill stale sm"><span class="glyph">○</span> STALE</span>
-          <span><b>ERAA · ID</b> — claim นี้อิง broker note ล่าสุด (2023-09-16) เกิน window 100 วัน ยังใช้ได้ไหม?</span>
-          <span class="btns"><button class="nb primary">ยืนยันยังใช้ได้</button><button class="nb">ขอข้อมูลใหม่</button></span>
-        </div>
 
         <div class="quiet" id="quiet-grp">
           <button class="quiet-toggle" id="quiet-tgl"><span class="chev">▶</span> 3 positions ยัง INTACT — ไม่มีอะไรเปลี่ยน <span class="cnt">พับเก็บไว้</span></button>
           <div class="quiet-body">
-            <button class="pf-row" aria-label="BBCA">
+            <button class="pf-row" id="row-BBCA" aria-label="BBCA">
               <div class="pf-id"><div class="tk">BBCA</div><div class="mk">ID · bank</div></div>
-              <div class="pf-claim">งบ FY2023 ยืนยัน loan-growth claim (2 ขา)<span class="ref">C1 · public + inhouse · as_of Q4'23</span></div>
+              <div class="pf-claim">Indonesia · Banking<span class="ref">Q4'23 QoQ: company +2.9% vs industry +2.1% (<span style="color:var(--intact-ink)">Δ +0.8pp</span>)</span></div>
               <div class="pf-status"><span class="pill intact"><span class="glyph">●</span> INTACT</span></div>
+              <div class="pf-check" data-cc="BBCA"></div>
               <div class="pf-metric"><div class="delta pos">+11.4%</div><div class="base">vs ≥ 10.0%</div></div>
             </button>
-            <button class="pf-row" aria-label="MAP">
+            <button class="pf-row" id="row-MAP" aria-label="MAP">
               <div class="pf-id"><div class="tk">MAP</div><div class="mk">ID · retail</div></div>
-              <div class="pf-claim">Domestic consumption ยังแข็งแรง ยอดฟื้นตามคาด<span class="ref">C1 · public + broker (2 issuers) · as_of Q4'23</span></div>
+              <div class="pf-claim">Indonesia · Apparel &amp; Lifestyle retail<span class="ref">Q4'23 QoQ: company +2.3% vs industry +1.7% (<span style="color:var(--intact-ink)">Δ +0.6pp</span>)</span></div>
               <div class="pf-status"><span class="pill intact"><span class="glyph">●</span> INTACT</span></div>
+              <div class="pf-check" data-cc="MAP"></div>
               <div class="pf-metric"><div class="delta pos">+8.1%</div><div class="base">vs ≥ 5.0%</div></div>
             </button>
-            <button class="pf-row" aria-label="HPG">
+            <button class="pf-row" id="row-HPG" aria-label="HPG">
               <div class="pf-id"><div class="tk">HPG</div><div class="mk">VN · steel</div></div>
-              <div class="pf-claim">Volume steel ฟื้นตาม property cycle<span class="ref">C1 · public + inhouse · as_of Q4'23</span></div>
+              <div class="pf-claim">Vietnam · Steel manufacturing<span class="ref">Q4'23 QoQ: company +3.6% vs industry +2.0% (<span style="color:var(--intact-ink)">Δ +1.6pp</span>)</span></div>
               <div class="pf-status"><span class="pill intact"><span class="glyph">●</span> INTACT</span></div>
+              <div class="pf-check" data-cc="HPG"></div>
               <div class="pf-metric"><div class="delta pos">+14.2%</div><div class="base">vs ≥ 8.0%</div></div>
             </button>
           </div>
         </div>
       </div>
-      <div class="callout"><b>Traffic-light logic:</b> 🟢 INTACT = actual ≥ threshold + evidence rule + ไม่มี contradiction grounded · 🟡 AT_RISK = อยู่ในโซน (threshold−tol) ถึง threshold เฉพาะ claim ที่ไม่ load-bearing หรือโมเดลเถียงกัน · 🔴 BROKEN = actual &lt; (threshold−tol) หรือ <b>load-bearing floor override</b> — claim หัวใจถูกยืนยันว่า breach → BROKEN ทันที ±tol ไม่ช่วย · ⚪ STALE/NO_DATA = ไม่มีหลักฐานสดใน window (filings 100d / news 30d) · tol อิงชนิด metric: margin → band สัมบูรณ์ 100 bp, growth/volume → ±20%</div>
-      <div class="callout"><b>P1 · เงียบโดยปริยาย:</b> หน้าจอโชว์เฉพาะตัวที่ต้องสนใจ (🔴) + ตัวที่ต้องยืนยัน freshness (⚪) ที่เหลือ INTACT พับเก็บ — false alarm เยอะ = ระบบตายเพราะไม่มีใครเชื่อ · ระบบส่งได้แค่ REVISIT (เป็นกลาง) คนเป็นผู้ตัดสิน · <b>คลิกแถว MWG เพื่อ drill-down</b></div>
     </section>
 
     <!-- ============ VIEW 2 · THESIS CARD ============ -->
@@ -388,13 +484,14 @@
       <div class="stock-hero">
         <div class="lead-col">
           <h1>Mobile World Group</h1>
-          <div class="meta">MWG · Ho Chi Minh (HOSE) · Vietnam · consumer retail · <span class="stamp">as_of Q4 2023</span></div>
         </div>
         <div class="price-col">
           <div class="px">VND 42,000</div>
           <div class="chg">−34% (2023)</div>
         </div>
       </div>
+
+      <div class="section-bar">Thesis evidence</div>
 
       <div class="moneyshot">
         <span class="ic">■</span>
@@ -403,72 +500,148 @@
 
       <div class="thesis-statement">Thesis เดิม (บันทึกปี 2022): MWG น่าถือเพราะ <b>ธุรกิจหลัก ICT/CE (TGDD + DMX) แข็งแรง</b> — คาดรายได้โต ≥ 0% YoY และ gross margin ยืนราว 21% หนุน re-rating ของ valuation</div>
 
-      <div class="claims-label">Claims · 3 · เรียงตามความสำคัญ · as_of Q4 2023</div>
-
-      <!-- C1 -->
-      <div class="claim-card load">
-        <div class="claim-hd">
-          <div class="stmt">“Core ICT/CE (TGDD + DMX) revenue growth ≥ 0% YoY”<span class="load-tag">load-bearing</span></div>
-          <span class="pill broken"><span class="glyph">■</span> BROKEN</span>
+      <div class="rc-toolbar">
+        <span class="rc-toolbar-label">Priority &amp; filter thesis evidence</span>
+        <div class="filters" id="rc-filters">
+          <button class="fchip active" data-rf="all">All</button>
+          <button class="fchip" data-rf="load-bearing">Load-bearing</button>
+          <button class="fchip" data-rf="review">Needs review</button>
         </div>
-        <div class="claim-body">
-          <div class="compare">
-            <span class="actual neg">−21%</span><span class="vs">ต่ำกว่าเกณฑ์ · YoY</span><span class="target">≥ 0% YoY</span><span class="horizon">horizon · Jan–Oct 2023</span>
+        <label class="rc-sort">Sort by
+          <select id="rc-sort">
+            <option value="priority">Priority</option>
+            <option value="confidence">Confidence</option>
+            <option value="stars">Conviction (★)</option>
+          </select>
+        </label>
+      </div>
+
+      <div id="rc-list">
+        <!-- reason 1 -->
+        <div class="reason-card open" data-reason="1" data-priority="1" data-confidence="0.94" data-stars="4" data-load="1" data-review="1">
+          <div class="reason-toggle" role="button" tabindex="0">
+            <span class="reason-num">1</span>
+            <span class="reason-title-wrap">
+              <span class="reason-eyebrow">Thesis reason 1 · that cause we buy</span><br>
+              <span class="reason-title">Core ICT/CE business strength<span class="load-tag">load-bearing</span></span>
+            </span>
+            <span class="reason-badge">
+              <span class="pill broken sm"><span class="glyph">■</span> AT_RISK</span>
+              <span class="stars">★★★★☆</span>
+            </span>
+            <span class="reason-help" data-help="1" onclick="event.stopPropagation()">?
+              <div class="reason-help-pop">★ = ทีมมั่นใจแค่ไหนตอนตั้ง thesis นี้ (1–5, ยิ่งมากยิ่งมั่นใจ) · badge สีคือสถานะปัจจุบันจาก evidence ล่าสุด ไม่ใช่ความมั่นใจตอนซื้อ</div>
+            </span>
+            <button class="reason-edit" data-edit="1" onclick="event.stopPropagation()">✎ Edit</button>
+            <span class="reason-chev">▶</span>
           </div>
-          <div class="why-line br"><b>ทำไม 🔴:</b> claim หัวใจ (load-bearing) ถูกยืนยันว่า breach — actual −21% ต่ำกว่า threshold 0% → <b>load-bearing floor override</b> → BROKEN ทันที (±tol ไม่ช่วย claim หัวใจ) · corroborate: FY2023 กำไรสุทธิ ~VND 168bn, −96% YoY, ต่ำสุดใน ~10 ปี</div>
-          <div class="ev-label">Evidence · 2 sources · differ by issuer</div>
-          <div class="ev-row"><span class="tier public">public</span><span class="txt">MWG business-results disclosure — รายได้ TGDD+DMX ม.ค.–ต.ค. 2023 −21% YoY</span><a class="trace" href="#">→ pg 3 · ln 8</a></div>
-          <div class="ev-row"><span class="tier public">public</span><span class="txt">Brokerage/wire — สงครามราคา ICT กด volume ทั้งอุตสาหกรรม (issuer อื่น)</span><a class="trace" href="#">→ pg 2 · ln 5</a></div>
-          <div class="claim-meta">
-            <span class="stamp">🕓 as_of Q4 2023 · known 2023-11</span>
-            <span class="decay">confidence 0.94<span class="sep">·</span><span class="bar"><i style="width:58%"></i></span>42/100d to STALE</span>
+          <div class="reason-body">
+            <div class="reason-sub">
+              <div class="reason-sub-label">Overview</div>
+              <div class="reason-sub-txt">Thesis เดิมเชื่อว่าธุรกิจหลัก TGDD + Điện Máy Xanh จะรักษาส่วนแบ่งตลาด ICT/CE อันดับ 1 ในเวียดนามได้ต่อเนื่อง แม้ในภาวะกำลังซื้อชะลอตัว</div>
+            </div>
+            <div class="reason-sub">
+              <div class="reason-sub-label">Why we bought</div>
+              <div class="reason-sub-txt">Margin structure แข็งแรงกว่าคู่แข่งรายย่อยจาก scale + sourcing power · เครือข่ายสาขาครอบคลุมทั่วประเทศ · ผู้บริหารมี track record ปรับกลยุทธ์เร็วในรอบขาลงก่อนหน้า (2015, 2020)</div>
+            </div>
+            <div class="reason-sub sell">
+              <div class="reason-sub-label">Sell / take-profit criteria</div>
+              <div class="reason-sub-txt">REVISIT ถ้ารายได้ core ICT/CE ติดลบต่อเนื่อง 2 ไตรมาส หรือ market share หลุดต่ำกว่า 35%</div>
+            </div>
+            <div class="ev-label">Evidence · 2 sources</div>
+            <div class="ev-row"><span class="tier public">public</span><span class="txt">MWG business-results disclosure — รายได้ TGDD+DMX ม.ค.–ต.ค. 2023 −21% YoY</span><a class="trace" href="#">→ Reference source · pg 3 · ln 8</a></div>
+            <div class="ev-row"><span class="tier public">public</span><span class="txt">Brokerage/wire — สงครามราคา ICT กด volume ทั้งอุตสาหกรรม (issuer อื่น)</span><a class="trace" href="#">→ Reference source · pg 2 · ln 5</a></div>
+            <div class="claim-meta">
+              <span class="stamp">🕓 as_of Q4 2023 · known 2023-11</span>
+              <span class="decay">confidence 0.94<span class="sep">·</span><span class="bar"><i style="width:58%"></i></span>42/100d to STALE</span>
+            </div>
           </div>
-          <div class="tl-strip"><span class="tl-lab">Verdict history</span><span class="tl-node intact"></span><span class="tl-c"></span><span class="tl-node intact"></span><span class="tl-c"></span><span class="tl-node risk"></span><span class="tl-c"></span><span class="tl-node broken"></span><span class="tl-d">Q1·23 → Q4·23</span></div>
+        </div>
+
+        <!-- reason 2 -->
+        <div class="reason-card" data-reason="2" data-priority="2" data-confidence="0.91" data-stars="3" data-load="1" data-review="1">
+          <div class="reason-toggle" role="button" tabindex="0">
+            <span class="reason-num">2</span>
+            <span class="reason-title-wrap">
+              <span class="reason-eyebrow">Thesis reason 2 · that cause we buy</span><br>
+              <span class="reason-title">Margin recovery via management guidance<span class="load-tag">load-bearing</span></span>
+            </span>
+            <span class="reason-badge">
+              <span class="pill risk sm"><span class="glyph">◆</span> NEED_REVIEW</span>
+              <span class="stars">★★★☆☆</span>
+            </span>
+            <span class="reason-help" data-help="2" onclick="event.stopPropagation()">?
+              <div class="reason-help-pop">★ = ทีมมั่นใจแค่ไหนตอนตั้ง thesis นี้ (1–5, ยิ่งมากยิ่งมั่นใจ) · badge สีคือสถานะปัจจุบันจาก evidence ล่าสุด ไม่ใช่ความมั่นใจตอนซื้อ</div>
+            </span>
+            <button class="reason-edit" data-edit="2" onclick="event.stopPropagation()">✎ Edit</button>
+            <span class="reason-chev">▶</span>
+          </div>
+          <div class="reason-body">
+            <div class="reason-sub">
+              <div class="reason-sub-label">Overview</div>
+              <div class="reason-sub-txt">ผู้บริหาร guide ไว้ต้นปี 2023 ว่า gross margin จะกลับไปยืนที่ระดับ ~21% ภายในสิ้นปี ผ่าน cost-control program และปรับ product mix</div>
+            </div>
+            <div class="reason-sub">
+              <div class="reason-sub-label">Why we bought</div>
+              <div class="reason-sub-txt">ผู้บริหารเคย deliver ตาม guidance ได้ในรอบก่อนหน้า · cost-control program ประกาศไปแล้วพร้อม timeline ชัดเจน</div>
+            </div>
+            <div class="reason-sub sell">
+              <div class="reason-sub-label">Sell / take-profit criteria</div>
+              <div class="reason-sub-txt">TRIM ถ้า margin ยังไม่ recovery ภายใน 2 ไตรมาสหลัง guidance ครบกำหนด</div>
+            </div>
+            <div class="ev-label">Evidence · 2 sources</div>
+            <div class="ev-row"><span class="tier public">public</span><span class="txt">MWG Q4 2023 financials — consolidated gross margin 19.68%</span><a class="trace" href="#">→ Reference source · pg 6 · ln 3</a></div>
+            <div class="ev-row"><span class="tier inhouse">inhouse</span><span class="txt">Analyst margin-bridge note — mix shift + price war กด margin −132 bp</span><a class="trace" href="#">→ Reference source · note 07 · 01:12</a></div>
+            <div class="claim-meta">
+              <span class="stamp">🕓 as_of Q4 2023 · known 2024-01-29</span>
+              <span class="decay">confidence 0.91<span class="sep">·</span><span class="bar"><i style="width:72%"></i></span>72/100d to STALE</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- reason 3 -->
+        <div class="reason-card" data-reason="3" data-priority="3" data-confidence="0.86" data-stars="4" data-load="0" data-review="0">
+          <div class="reason-toggle" role="button" tabindex="0">
+            <span class="reason-num">3</span>
+            <span class="reason-title-wrap">
+              <span class="reason-eyebrow">Thesis reason 3 · that cause we buy</span><br>
+              <span class="reason-title">Store network &amp; online growth runway</span>
+            </span>
+            <span class="reason-badge">
+              <span class="pill intact sm"><span class="glyph">●</span> INTACT</span>
+              <span class="stars">★★★★☆</span>
+            </span>
+            <span class="reason-help" data-help="3" onclick="event.stopPropagation()">?
+              <div class="reason-help-pop">★ = ทีมมั่นใจแค่ไหนตอนตั้ง thesis นี้ (1–5, ยิ่งมากยิ่งมั่นใจ) · badge สีคือสถานะปัจจุบันจาก evidence ล่าสุด ไม่ใช่ความมั่นใจตอนซื้อ</div>
+            </span>
+            <button class="reason-edit" data-edit="3" onclick="event.stopPropagation()">✎ Edit</button>
+            <span class="reason-chev">▶</span>
+          </div>
+          <div class="reason-body">
+            <div class="reason-sub">
+              <div class="reason-sub-label">Overview</div>
+              <div class="reason-sub-txt">แผนขยายสาขาต่อเนื่องปีละ ~150–200 สาขา พร้อมสัดส่วน online sales ที่โตเร็วกว่าค่าเฉลี่ยอุตสาหกรรม ~1.5 เท่า</div>
+            </div>
+            <div class="reason-sub">
+              <div class="reason-sub-label">Why we bought</div>
+              <div class="reason-sub-txt">Online penetration ของ MWG ยังต่ำกว่า regional peers เหลือ upside ชัดเจน · capex plan สำหรับ fulfilment ประกาศไปแล้ว</div>
+            </div>
+            <div class="reason-sub sell">
+              <div class="reason-sub-label">Sell / take-profit criteria</div>
+              <div class="reason-sub-txt">REVISIT ถ้า online GMV growth ต่ำกว่าค่าเฉลี่ยอุตสาหกรรม 2 ไตรมาสติดต่อกัน</div>
+            </div>
+            <div class="ev-label">Evidence · 1 source</div>
+            <div class="ev-row"><span class="tier public">public</span><span class="txt">Company investor-day deck — online GMV +38% YoY, store count plan FY24</span><a class="trace" href="#">→ Reference source · Investor Day · pg 14</a></div>
+            <div class="claim-meta">
+              <span class="stamp">🕓 as_of Q4 2023 · known 2024-01-29</span>
+              <span class="decay">confidence 0.86<span class="sep">·</span><span class="bar"><i style="width:35%"></i></span>18/30d to STALE</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- C2 -->
-      <div class="claim-card load">
-        <div class="claim-hd">
-          <div class="stmt">“Consolidated gross margin ≥ 21.0%”<span class="load-tag">load-bearing</span></div>
-          <span class="pill broken"><span class="glyph">■</span> BROKEN</span>
-        </div>
-        <div class="claim-body">
-          <div class="compare">
-            <span class="actual neg">19.68%</span><span class="vs">ต่ำกว่าเกณฑ์ · −132 bp</span><span class="target">≥ 21.0%</span><span class="horizon">horizon · Q4 2023</span>
-          </div>
-          <div class="why-line br"><b>ทำไม 🔴:</b> metric แบบ level/ratio → tol band สัมบูรณ์ 100 bp · breach −132 bp เกิน band แล้ว และเป็น claim หัวใจ → <b>load-bearing floor override</b> → BROKEN · (เป็น margin floor เชิงประวัติ/analyst ไม่ใช่ guidance ของบริษัท)</div>
-          <div class="ev-label">Evidence · 2 sources · differ by tier</div>
-          <div class="ev-row"><span class="tier public">public</span><span class="txt">MWG Q4 2023 financials — consolidated gross margin 19.68%</span><a class="trace" href="#">→ pg 6 · ln 3</a></div>
-          <div class="ev-row"><span class="tier inhouse">inhouse</span><span class="txt">Analyst margin-bridge note — mix shift + price war กด margin −132 bp</span><a class="trace" href="#">→ note 07 · 01:12</a></div>
-          <div class="claim-meta">
-            <span class="stamp">🕓 as_of Q4 2023 · known 2024-01-29</span>
-            <span class="decay">confidence 0.91<span class="sep">·</span><span class="bar"><i style="width:72%"></i></span>72/100d to STALE</span>
-          </div>
-          <div class="tl-strip"><span class="tl-lab">Verdict history</span><span class="tl-node intact"></span><span class="tl-c"></span><span class="tl-node risk"></span><span class="tl-c"></span><span class="tl-node risk"></span><span class="tl-c"></span><span class="tl-node broken"></span><span class="tl-d">Q1·23 → Q4·23</span></div>
-        </div>
-      </div>
-
-      <!-- C3 -->
-      <div class="claim-card">
-        <div class="claim-hd">
-          <div class="stmt">“โทน outlook ผู้บริหาร — สงครามราคาเป็นเชิงโครงสร้างหรือเชิงวัฏจักร”</div>
-          <span class="pill risk"><span class="glyph">◆</span> AT_RISK</span>
-        </div>
-        <div class="claim-body">
-          <div class="compare">
-            <span class="actual warn">—</span><span class="vs">เชิงคุณภาพ · สองโมเดลเห็นไม่ตรง</span><span class="target">rubric-based</span><span class="horizon">→ Verification Queue</span>
-          </div>
-          <div class="why-line ri"><b>ทำไม 🟡:</b> claim เชิงคุณภาพ ไม่มีตัวเลขเทียบตรง · adjudicator กับ adversarial checker เห็นค้าน (structural vs cyclical) → route เข้า Verification Queue ให้คนตัดสิน</div>
-          <div class="ev-label">Evidence · 1 source</div>
-          <div class="ev-row"><span class="tier public">public</span><span class="txt">MD&amp;A / earnings-call Q4 2023 — ย่อหน้า outlook, ประโยคที่ 3</span><a class="trace" href="#">→ pg 9 · ln 2</a></div>
-          <div class="claim-meta">
-            <span class="stamp">🕓 as_of Q4 2023 · known 2024-01-29</span>
-            <span class="decay">confidence 0.62<span class="sep">·</span><span class="bar"><i style="width:64%"></i></span>64/100d to STALE</span>
-          </div>
-          <div class="tl-strip"><span class="tl-lab">Verdict history</span><span class="tl-node intact"></span><span class="tl-c"></span><span class="tl-node intact"></span><span class="tl-c"></span><span class="tl-node risk"></span><span class="tl-c"></span><span class="tl-node risk"></span><span class="tl-d">Q1·23 → Q4·23</span></div>
-        </div>
-      </div>
+      <button class="rc-more" id="rc-more-btn"><span class="chev">⌄</span> Show more thesis support</button>
+      <div class="rc-more-body" id="rc-more-body"><div class="rc-nodata">No data available</div></div>
 
       <!-- decision panel -->
       <div class="decision-panel">
@@ -477,7 +650,7 @@
           <span class="dp-flag">■ claim load-bearing แตก 2 ตัว → REVISIT</span>
         </div>
         <div class="dp-body">
-          <div class="dp-rec"><b>สรุปให้พิจารณา:</b> claim หัวใจ 2 ตัว (C1 revenue, C2 margin) เป็น BROKEN — ระบบยกธงกลาง <b>REVISIT</b> ตัวเดียว · HOLD/ADD/TRIM/EXIT เป็นสิทธิ์คน ไม่มีปุ่มใดถูกเลือกไว้ล่วงหน้า</div>
+          <div class="dp-rec"><b>สรุปให้พิจารณา:</b> claim หัวใจ 2 ตัว (C1 revenue, C2 margin) เป็น AT_RISK — ระบบยกธงกลาง <b>REVISIT</b> ตัวเดียว · HOLD/ADD/TRIM/EXIT เป็นสิทธิ์คน ไม่มีปุ่มใดถูกเลือกไว้ล่วงหน้า</div>
           <div class="dp-btns">
             <button class="dbtn"><span class="g">◆</span> REVISIT</button>
             <button class="dbtn"><span class="g">●</span> HOLD</button>
@@ -485,7 +658,7 @@
             <button class="dbtn">EXIT</button>
           </div>
           <div class="log-label">Decision log · append-only</div>
-          <div class="log-entry"><span class="when">2024-01-29</span><span class="act">FLAGGED</span><span class="by">ระบบยกธง REVISIT — C1 + C2 load-bearing BROKEN (evidence known ≤ 2024-01-29)</span></div>
+          <div class="log-entry"><span class="when">2024-01-29</span><span class="act">FLAGGED</span><span class="by">ระบบยกธง REVISIT — C1 + C2 load-bearing AT_RISK (evidence known ≤ 2024-01-29)</span></div>
           <div class="log-entry"><span class="when">2023-11-14</span><span class="act">FLAGGED</span><span class="by">ระบบยกธง — C1 revenue −21% breach</span></div>
           <div class="log-entry"><span class="when">2022-09-02</span><span class="act">HOLD</span><span class="by">ตัดสินโดย <b>ปวริศ (PM)</b> — thesis เดิม, ธุรกิจหลักยังแข็งแรง</span></div>
         </div>
@@ -535,8 +708,8 @@
             <div class="match-claim" id="m-claim">“Core ICT/CE (TGDD + DMX) revenue growth ≥ 0% YoY”</div>
             <div class="match-co" id="m-co">MWG · Vietnam · claim C1 · load-bearing</div>
             <div class="compare" id="m-compare"><span class="actual neg" style="font-size:1.45rem;">−21%</span><span class="vs">ต่ำกว่าเกณฑ์ · YoY</span><span class="target">≥ 0% YoY</span></div>
-            <div style="margin-bottom:0.6rem;"><span class="pill broken" id="m-pill"><span class="glyph">■</span> BROKEN</span></div>
-            <div class="verdict-reason" id="m-reason"><b>ทำไม BROKEN:</b> actual <b>−21% vs ≥0%</b> — claim หัวใจ (load-bearing) ถูกยืนยันว่า breach → load-bearing floor override → BROKEN ทันที · grounded ถึงหน้า/บรรทัด · stamp as_of Q4 2023 · known 2023-11</div>
+            <div style="margin-bottom:0.6rem;"><span class="pill broken" id="m-pill"><span class="glyph">■</span> AT_RISK</span></div>
+            <div class="verdict-reason" id="m-reason"><b>ทำไม AT_RISK:</b> actual <b>−21% vs ≥0%</b> — claim หัวใจ (load-bearing) ถูกยืนยันว่า breach → load-bearing floor override → AT_RISK ทันที · grounded ถึงหน้า/บรรทัด · stamp as_of Q4 2023 · known 2023-11</div>
             <div class="impact"><div class="il">Impact · claim นี้ถูกอ้างที่ไหน</div><div class="irow">• Thesis Card ของ MWG</div><div class="irow">• Portfolio Board — แถวบนสุด</div></div>
             <button class="btn-cite">⧉ cite — ลิงก์ไปต้นฉบับ</button>
           </div>
@@ -561,7 +734,7 @@
             <span class="vq-why">◆ adversarial disagreement</span>
           </div>
           <div class="debate">
-            <div class="model a"><div class="mh"><span class="mname">Model · adjudicator</span><span class="pill risk sm"><span class="glyph">◆</span> AT_RISK</span></div><div class="arg">ภาษาชี้ว่าการกดดัน margin เป็น<b>เชิงโครงสร้าง</b> — สงครามราคา ICT เปลี่ยนเศรษฐศาสตร์ของธุรกิจหลักถาวร ไม่ใช่รอบสั้น ๆ</div></div>
+            <div class="model a"><div class="mh"><span class="mname">Model · adjudicator</span><span class="pill risk sm"><span class="glyph">◆</span> NEED_REVIEW</span></div><div class="arg">ภาษาชี้ว่าการกดดัน margin เป็น<b>เชิงโครงสร้าง</b> — สงครามราคา ICT เปลี่ยนเศรษฐศาสตร์ของธุรกิจหลักถาวร ไม่ใช่รอบสั้น ๆ</div></div>
             <div class="model b"><div class="mh"><span class="mname">Model · adversarial</span><span class="pill intact sm"><span class="glyph">●</span> INTACT</span></div><div class="arg">ผู้บริหารกรอบว่าเป็น<b>เชิงวัฏจักร</b> — เมื่อ demand ฟื้น margin จะกลับ ไม่พอสรุปว่า thesis พังเชิงโครงสร้าง</div></div>
           </div>
           <div class="vq-evidence"><span class="tier">public</span><span>MD&amp;A / earnings-call Q4 2023 — ย่อหน้า outlook, ประโยคที่ 3</span><a class="trace" href="#">→ pg 9 · ln 2</a></div>
@@ -569,7 +742,7 @@
             <div class="decision-label">คำตัดสินของคน — เขียนลง decision log (append-only) · decided_by = คน</div>
             <div class="decision-btns">
               <button class="dbtn confirm"><span class="g">●</span> ยืนยัน INTACT</button>
-              <button class="dbtn mark"><span class="g">◆</span> รับเป็น AT_RISK</button>
+              <button class="dbtn mark"><span class="g">◆</span> รับเป็น NEED_REVIEW</button>
               <button class="dbtn">ขอหลักฐานเพิ่ม</button>
             </div>
             <div class="audit-note">decided_by = ต้องเป็นคน · timestamp · แก้ย้อนหลังไม่ได้</div>
@@ -587,6 +760,164 @@
 
 <script>
   (function () {
+    /* ===== PORTFOLIO OVERVIEW + CLAIM CHECKING — single data source ===== */
+    var VERDICT_COLOR = { intact: "var(--intact)", risk: "var(--risk)", broken: "var(--broken)", stale: "var(--stale)" };
+    var VERDICT_LABEL = { intact: "INTACT", risk: "NEED_REVIEW", broken: "AT_RISK", stale: "STALE" };
+    var VERDICT_ORDER = ["broken", "risk", "stale", "intact"]; // worst-first, matches board ordering
+
+    var POSITIONS = [
+      { ticker: "MWG",   market: "VN", verdict: "broken", totalDataPoints: 25, pendingDataPoints: 6, avgConfidence: 0.82 },
+      { ticker: "CPALL", market: "TH", verdict: "risk",    totalDataPoints: 18, pendingDataPoints: 2, avgConfidence: 0.88 },
+      { ticker: "ERAA",  market: "ID", verdict: "stale",   totalDataPoints: 14, pendingDataPoints: 3, avgConfidence: 0.55 },
+      { ticker: "BBCA",  market: "ID", verdict: "intact",  totalDataPoints: 22, pendingDataPoints: 1, avgConfidence: 0.90 },
+      { ticker: "MAP",   market: "ID", verdict: "intact",  totalDataPoints: 18, pendingDataPoints: 1, avgConfidence: 0.86 },
+      { ticker: "HPG",   market: "VN", verdict: "intact",  totalDataPoints: 20, pendingDataPoints: 1, avgConfidence: 0.89 }
+    ];
+
+    /* ===== CLAIM CHECKING MODULE =====
+       Answers "how much of this position's evidence is still unverified" — a different
+       axis from thesis-health (INTACT/AT_RISK/NEED_REVIEW/STALE). Retune WEIGHTS/TIERS here
+       only; nothing else in the file needs to change when the formula is revised. */
+    var ClaimChecking = {
+      WEIGHTS: { pendingData: 0.6, confidenceGap: 0.4 },
+      TIERS: { mid: 10, high: 20 },
+      compute: function (pos) {
+        var pendingRatio = pos.totalDataPoints ? pos.pendingDataPoints / pos.totalDataPoints : 0;
+        var confGap = 1 - pos.avgConfidence;
+        return Math.round((pendingRatio * this.WEIGHTS.pendingData + confGap * this.WEIGHTS.confidenceGap) * 100);
+      },
+      tier: function (pct) {
+        if (pct >= this.TIERS.high) return "high";
+        if (pct >= this.TIERS.mid) return "mid";
+        return "low";
+      }
+    };
+
+    function renderClaimCheckingBadges() {
+      document.querySelectorAll("[data-cc]").forEach(function (el) {
+        var pos = POSITIONS.filter(function (p) { return p.ticker === el.getAttribute("data-cc"); })[0];
+        if (!pos) return;
+        var pct = ClaimChecking.compute(pos);
+        el.innerHTML = '<span class="cc-badge ' + ClaimChecking.tier(pct) + '">check ' + pct + '%</span>';
+      });
+    }
+
+    function renderTiles() {
+      var totalPending = POSITIONS.reduce(function (s, p) { return s + p.pendingDataPoints; }, 0);
+      var totalData = POSITIONS.reduce(function (s, p) { return s + p.totalDataPoints; }, 0);
+      var coveragePct = Math.round((1 - totalPending / totalData) * 100);
+      document.getElementById("pfo-tiles").innerHTML =
+        '<div class="pfo-tile"><div class="pfo-tile-lbl">Positions</div><div class="pfo-tile-val">' + POSITIONS.length + '</div></div>' +
+        '<div class="pfo-tile warn"><div class="pfo-tile-lbl">ต้องเช็คตอนนี้</div><div class="pfo-tile-val">' + totalPending + ' <span class="unit">data points</span></div></div>' +
+        '<div class="pfo-tile"><div class="pfo-tile-lbl">Coverage เฉลี่ยที่เช็คแล้ว</div><div class="pfo-tile-val">' + coveragePct + '%</div></div>';
+    }
+
+    function renderTabs() {
+      document.getElementById("pfo-tabs").innerHTML = POSITIONS.map(function (p, i) {
+        return '<button class="pfo-tab' + (i === 0 ? ' active' : '') + '" data-jump="' + p.ticker + '"><span class="d" style="background:' + VERDICT_COLOR[p.verdict] + '"></span>' + p.ticker + '</button>';
+      }).join("");
+    }
+
+    function renderDonut() {
+      var buckets = {};
+      POSITIONS.forEach(function (p) { buckets[p.verdict] = (buckets[p.verdict] || 0) + 1; });
+      var n = POSITIONS.length, stops = [], legendHtml = "", acc = 0;
+      VERDICT_ORDER.filter(function (v) { return buckets[v]; }).forEach(function (v) {
+        var count = buckets[v], pct = Math.round((count / n) * 100);
+        stops.push(VERDICT_COLOR[v] + " " + acc + "% " + (acc + (count / n) * 100) + "%");
+        acc += (count / n) * 100;
+        var tickers = POSITIONS.filter(function (p) { return p.verdict === v; }).map(function (p) { return p.ticker; }).join(", ");
+        legendHtml += '<div class="li"><span class="dot" style="background:' + VERDICT_COLOR[v] + '"></span><span class="nm">' + VERDICT_LABEL[v] + '</span><span class="cnt">— ' + count + ' (' + pct + '%)</span><span class="tk">' + tickers + '</span></div>';
+      });
+      document.getElementById("pfo-donut").style.background = "conic-gradient(" + stops.join(", ") + ")";
+      document.getElementById("pfo-donut-num").textContent = Math.round(((buckets.intact || 0) / n) * 100) + "%";
+      document.getElementById("pfo-legend").innerHTML = legendHtml;
+    }
+
+    document.getElementById("pfo-tabs").addEventListener("click", function (e) {
+      var btn = e.target.closest("button[data-jump]");
+      if (!btn) return;
+      this.querySelectorAll("button").forEach(function (b) { b.classList.toggle("active", b === btn); });
+      var ticker = btn.getAttribute("data-jump");
+      var row = document.getElementById("row-" + ticker);
+      if (!row) return;
+      var quiet = row.closest(".quiet");
+      if (quiet && !quiet.classList.contains("open")) quiet.classList.add("open");
+      row.scrollIntoView({ behavior: "smooth", block: "center" });
+      row.classList.remove("flash"); void row.offsetWidth; row.classList.add("flash");
+    });
+
+    renderTiles();
+    renderTabs();
+    renderDonut();
+    renderClaimCheckingBadges();
+
+    /* ===== THESIS EVIDENCE — reason cards (Thesis Card screen) ===== */
+    document.querySelectorAll(".reason-toggle").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        btn.closest(".reason-card").classList.toggle("open");
+      });
+      btn.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); btn.click(); }
+      });
+    });
+
+    document.querySelectorAll(".reason-help").forEach(function (h) {
+      h.addEventListener("click", function () {
+        var wasOpen = h.classList.contains("open");
+        document.querySelectorAll(".reason-help.open").forEach(function (o) { o.classList.remove("open"); });
+        if (!wasOpen) h.classList.add("open");
+      });
+    });
+    document.addEventListener("click", function () {
+      document.querySelectorAll(".reason-help.open").forEach(function (o) { o.classList.remove("open"); });
+    });
+
+    document.querySelectorAll(".reason-edit").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var editing = btn.classList.toggle("editing");
+        btn.textContent = editing ? "✓ Editing…" : "✎ Edit";
+      });
+    });
+
+    var rcFilters = document.getElementById("rc-filters");
+    if (rcFilters) {
+      rcFilters.addEventListener("click", function (e) {
+        var btn = e.target.closest("button[data-rf]");
+        if (!btn) return;
+        rcFilters.querySelectorAll("button").forEach(function (b) { b.classList.toggle("active", b === btn); });
+        var f = btn.getAttribute("data-rf");
+        document.querySelectorAll(".reason-card").forEach(function (card) {
+          var show = f === "all" || (f === "load-bearing" && card.getAttribute("data-load") === "1") || (f === "review" && card.getAttribute("data-review") === "1");
+          card.style.display = show ? "" : "none";
+        });
+      });
+    }
+
+    var rcSort = document.getElementById("rc-sort");
+    if (rcSort) {
+      rcSort.addEventListener("change", function () {
+        var key = this.value;
+        var list = document.getElementById("rc-list");
+        var cards = Array.prototype.slice.call(list.querySelectorAll(".reason-card"));
+        cards.sort(function (a, b) {
+          var av = parseFloat(a.getAttribute("data-" + key));
+          var bv = parseFloat(b.getAttribute("data-" + key));
+          return key === "priority" ? av - bv : bv - av;
+        });
+        cards.forEach(function (c) { list.appendChild(c); });
+      });
+    }
+
+    var rcMoreBtn = document.getElementById("rc-more-btn");
+    if (rcMoreBtn) {
+      rcMoreBtn.addEventListener("click", function () {
+        var isOpen = this.classList.toggle("open");
+        document.getElementById("rc-more-body").classList.toggle("open", isOpen);
+        this.innerHTML = '<span class="chev">⌄</span> ' + (isOpen ? "Hide" : "Show more thesis support");
+      });
+    }
+
     /* ---- view navigation ---- */
     var views = { board:"view-board", card:"view-card", trace:"view-trace", queue:"view-queue" };
     var navBtns = document.querySelectorAll(".nav button");
@@ -610,9 +941,9 @@
 
     /* ---- Drop & Trace assertion switching ---- */
     var data = {
-      "a-broken": { pg:"page 3", hl:"“Revenue from the ICT/CE chains (Thegioididong + Dien May Xanh) declined 21% YoY over Jan–Oct 2023 amid an aggressive price war.”", cite:"page 3 · line 8 · grounded", hlBorder:"var(--broken)", hlBg:"color-mix(in srgb,var(--broken) 16%,#fff)", citeColor:"var(--broken-ink)", claim:"“Core ICT/CE (TGDD + DMX) revenue growth ≥ 0% YoY”", co:"MWG · Vietnam · claim C1 · load-bearing", actual:"−21%", vs:"ต่ำกว่าเกณฑ์ · YoY", target:"≥ 0% YoY", actualColor:"var(--broken-ink)", pill:"broken", glyph:"■", pillText:"BROKEN", reason:"<b>ทำไม BROKEN:</b> actual <b>−21% vs ≥0%</b> — claim หัวใจ (load-bearing) ถูกยืนยันว่า breach → load-bearing floor override → BROKEN ทันที · grounded ถึงหน้า/บรรทัด · stamp as_of Q4 2023 · known 2023-11" },
-      "a-broken2": { pg:"page 6", hl:"“Consolidated gross margin came in at 19.68% in Q4 2023, down 132 bps as the price war and mix shift compressed profitability.”", cite:"page 6 · line 3 · grounded", hlBorder:"var(--broken)", hlBg:"color-mix(in srgb,var(--broken) 16%,#fff)", citeColor:"var(--broken-ink)", claim:"“Consolidated gross margin ≥ 21.0%”", co:"MWG · Vietnam · claim C2 · load-bearing", actual:"19.68%", vs:"ต่ำกว่าเกณฑ์ · −132 bp", target:"≥ 21.0%", actualColor:"var(--broken-ink)", pill:"broken", glyph:"■", pillText:"BROKEN", reason:"<b>ทำไม BROKEN:</b> <b>19.68% vs ≥21.0% (−132 bp)</b> — metric ratio → tol band 100 bp, breach เกิน band + เป็น claim หัวใจ → load-bearing floor override → BROKEN · stamp as_of Q4 2023 · known 2024-01-29" },
-      "a-risk": { pg:"page 9", hl:"“Management framed the ICT price war as a cyclical episode rather than a structural shift in the outlook.”", cite:"page 9 · line 2 · grounded", hlBorder:"var(--risk)", hlBg:"color-mix(in srgb,var(--risk) 16%,#fff)", citeColor:"var(--risk-ink)", claim:"“โทน outlook ผู้บริหาร — สงครามราคาเชิงโครงสร้างหรือวัฏจักร”", co:"MWG · Vietnam · claim C3 · qualitative", actual:"—", vs:"สองโมเดลเห็นไม่ตรง", target:"เชิงคุณภาพ", actualColor:"var(--risk-ink)", pill:"risk", glyph:"◆", pillText:"AT_RISK", reason:"<b>ทำไม AT_RISK:</b> claim เชิงคุณภาพที่ไม่มีตัวเลขเทียบตรง — adjudicator (structural) กับ adversarial checker (cyclical) เห็นไม่ตรงกัน จึงส่งเข้า Verification Queue ให้คนตัดสิน" },
+      "a-broken": { pg:"page 3", hl:"“Revenue from the ICT/CE chains (Thegioididong + Dien May Xanh) declined 21% YoY over Jan–Oct 2023 amid an aggressive price war.”", cite:"page 3 · line 8 · grounded", hlBorder:"var(--broken)", hlBg:"color-mix(in srgb,var(--broken) 16%,#fff)", citeColor:"var(--broken-ink)", claim:"“Core ICT/CE (TGDD + DMX) revenue growth ≥ 0% YoY”", co:"MWG · Vietnam · claim C1 · load-bearing", actual:"−21%", vs:"ต่ำกว่าเกณฑ์ · YoY", target:"≥ 0% YoY", actualColor:"var(--broken-ink)", pill:"broken", glyph:"■", pillText:"AT_RISK", reason:"<b>ทำไม AT_RISK:</b> actual <b>−21% vs ≥0%</b> — claim หัวใจ (load-bearing) ถูกยืนยันว่า breach → load-bearing floor override → AT_RISK ทันที · grounded ถึงหน้า/บรรทัด · stamp as_of Q4 2023 · known 2023-11" },
+      "a-broken2": { pg:"page 6", hl:"“Consolidated gross margin came in at 19.68% in Q4 2023, down 132 bps as the price war and mix shift compressed profitability.”", cite:"page 6 · line 3 · grounded", hlBorder:"var(--broken)", hlBg:"color-mix(in srgb,var(--broken) 16%,#fff)", citeColor:"var(--broken-ink)", claim:"“Consolidated gross margin ≥ 21.0%”", co:"MWG · Vietnam · claim C2 · load-bearing", actual:"19.68%", vs:"ต่ำกว่าเกณฑ์ · −132 bp", target:"≥ 21.0%", actualColor:"var(--broken-ink)", pill:"broken", glyph:"■", pillText:"AT_RISK", reason:"<b>ทำไม AT_RISK:</b> <b>19.68% vs ≥21.0% (−132 bp)</b> — metric ratio → tol band 100 bp, breach เกิน band + เป็น claim หัวใจ → load-bearing floor override → AT_RISK · stamp as_of Q4 2023 · known 2024-01-29" },
+      "a-risk": { pg:"page 9", hl:"“Management framed the ICT price war as a cyclical episode rather than a structural shift in the outlook.”", cite:"page 9 · line 2 · grounded", hlBorder:"var(--risk)", hlBg:"color-mix(in srgb,var(--risk) 16%,#fff)", citeColor:"var(--risk-ink)", claim:"“โทน outlook ผู้บริหาร — สงครามราคาเชิงโครงสร้างหรือวัฏจักร”", co:"MWG · Vietnam · claim C3 · qualitative", actual:"—", vs:"สองโมเดลเห็นไม่ตรง", target:"เชิงคุณภาพ", actualColor:"var(--risk-ink)", pill:"risk", glyph:"◆", pillText:"NEED_REVIEW", reason:"<b>ทำไม NEED_REVIEW:</b> claim เชิงคุณภาพที่ไม่มีตัวเลขเทียบตรง — adjudicator (structural) กับ adversarial checker (cyclical) เห็นไม่ตรงกัน จึงส่งเข้า Verification Queue ให้คนตัดสิน" },
       "a-nodata": { pg:"page 2", hl:"“Vietnam’s macroeconomic backdrop for H2 remained broadly stable with steady domestic demand.”", cite:"page 2 · line 1 · no matching claim", hlBorder:"var(--rule-strong)", hlBg:"var(--sunken)", citeColor:"var(--ink-muted)", claim:"— ไม่แตะ claim ใดเลย", co:"ข้อความมาโคร — ไม่เข้าเกณฑ์ claim ที่มีอยู่", actual:"—", vs:"", target:"", actualColor:"var(--ink-muted)", pill:"nodata", glyph:"○", pillText:"⚪ NO_DATA", reason:"<b>ทำไม ⚪:</b> assertion นี้ไม่แม็บ claim ที่เฝ้าดูอยู่ — ระบบไม่เดาว่าสำคัญ เก็บไว้เฉย — abstention มากกว่าเดา" }
     };
     var rows = document.querySelectorAll(".assertion");
