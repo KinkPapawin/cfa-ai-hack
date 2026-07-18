@@ -1,0 +1,406 @@
+<title>Thesis Ledger — App Flow (3-Day Scope)</title>
+<style>
+  :root {
+    --bg: #EFF2EC;
+    --panel: #FBFCF9;
+    --panel-border: #C9D0C0;
+    --ink: #1B2027;
+    --ink-soft: #565D51;
+    --ink-faint: #7C8274;
+    --accent: #2F4468;
+    --accent-soft: #5C7099;
+    --accent-warm: #A9793B;
+    --rule: #CBD1C2;
+    --mono-bg: #E4E8DD;
+
+    --intact: #2E6F49;   --intact-bg: #DCEEE1;
+    --risk:   #96702A;   --risk-bg:   #F3E7D0;
+    --broken: #A4432F;   --broken-bg: #F4DED8;
+    --stale:  #6E7367;   --stale-bg:  #E4E6DF;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12151A; --panel: #181C22; --panel-border: #2C3430;
+      --ink: #E7E9E2; --ink-soft: #A9AEA2; --ink-faint: #7B8177;
+      --accent: #92A8D9; --accent-soft: #6E86B8; --accent-warm: #D3AA63;
+      --rule: #333A33; --mono-bg: #1E231C;
+      --intact: #6FBE8B; --intact-bg: #1E3327;
+      --risk:   #E0B36B; --risk-bg:   #3A2E18;
+      --broken: #E38A76; --broken-bg: #3B231D;
+      --stale:  #A7ACA0; --stale-bg:  #262A24;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #12151A; --panel: #181C22; --panel-border: #2C3430;
+    --ink: #E7E9E2; --ink-soft: #A9AEA2; --ink-faint: #7B8177;
+    --accent: #92A8D9; --accent-soft: #6E86B8; --accent-warm: #D3AA63;
+    --rule: #333A33; --mono-bg: #1E231C;
+    --intact: #6FBE8B; --intact-bg: #1E3327;
+    --risk:   #E0B36B; --risk-bg:   #3A2E18;
+    --broken: #E38A76; --broken-bg: #3B231D;
+    --stale:  #A7ACA0; --stale-bg:  #262A24;
+  }
+  :root[data-theme="light"] {
+    --bg: #EFF2EC; --panel: #FBFCF9; --panel-border: #C9D0C0;
+    --ink: #1B2027; --ink-soft: #565D51; --ink-faint: #7C8274;
+    --accent: #2F4468; --accent-soft: #5C7099; --accent-warm: #A9793B;
+    --rule: #CBD1C2; --mono-bg: #E4E8DD;
+    --intact: #2E6F49; --intact-bg: #DCEEE1;
+    --risk:   #96702A; --risk-bg:   #F3E7D0;
+    --broken: #A4432F; --broken-bg: #F4DED8;
+    --stale:  #6E7367; --stale-bg:  #E4E6DF;
+  }
+
+  * { box-sizing: border-box; }
+  html { color-scheme: light dark; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+  }
+  .page {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    max-width: 880px;
+    margin: 0 auto;
+    padding: clamp(1.5rem, 4vw, 3.5rem) clamp(1.1rem, 4vw, 1.5rem) 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2.4rem, 5vw, 3.4rem);
+    line-height: 1.55;
+  }
+
+  h1, h2, h3 { font-family: Charter, "Iowan Old Style", Georgia, serif; text-wrap: balance; margin: 0; }
+  .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace; }
+
+  .eyebrow {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-soft);
+    margin: 0 0 0.5rem;
+  }
+
+  /* ---------- Masthead ---------- */
+  .masthead { border-bottom: 1px solid var(--rule); padding-bottom: 1.8rem; }
+  .masthead h1 { font-size: clamp(1.7rem, 4vw, 2.35rem); font-weight: 600; letter-spacing: -0.01em; }
+  .masthead .subtitle { color: var(--ink-soft); font-size: 1.02rem; margin-top: 0.4rem; max-width: 62ch; }
+  .badges { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.1rem; }
+  .badge {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.74rem;
+    padding: 0.28rem 0.6rem;
+    border: 1px solid var(--panel-border);
+    border-radius: 3px;
+    color: var(--ink-soft);
+    background: var(--panel);
+  }
+  .badge.strong { color: var(--accent); border-color: var(--accent-soft); }
+
+  /* ---------- Exhibit shell ---------- */
+  .exhibit { display: flex; flex-direction: column; gap: 1rem; }
+  .exhibit h2 { font-size: clamp(1.2rem, 2.6vw, 1.5rem); font-weight: 600; }
+  .exhibit .desc { color: var(--ink-soft); max-width: 68ch; font-size: 0.96rem; }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-top: 3px solid var(--accent);
+    border-radius: 4px;
+    padding: clamp(1rem, 3vw, 1.6rem);
+  }
+
+  /* ---------- Linear flow ---------- */
+  .flow { display: flex; align-items: stretch; gap: 0; overflow-x: auto; padding-bottom: 0.4rem; }
+  .flow-card {
+    flex: 0 0 auto;
+    width: 168px;
+    border: 1px solid var(--panel-border);
+    border-radius: 4px;
+    padding: 0.75rem 0.7rem;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .flow-card .stage { font-size: 0.65rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent-soft); font-family: ui-monospace, monospace; }
+  .flow-card .title { font-weight: 600; font-size: 0.92rem; }
+  .flow-card .note { font-size: 0.78rem; color: var(--ink-soft); }
+  .flow-card.branch { width: 220px; gap: 0.55rem; }
+  .branch-row { border-top: 1px dashed var(--rule); padding-top: 0.4rem; font-size: 0.78rem; color: var(--ink-soft); }
+  .branch-row:first-of-type { border-top: none; padding-top: 0; }
+  .branch-row .tag {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-family: ui-monospace, monospace;
+    color: var(--accent);
+    border: 1px solid var(--accent-soft);
+    border-radius: 2px;
+    padding: 0.02rem 0.3rem;
+    margin-right: 0.3rem;
+  }
+  .connector { flex: 0 0 auto; width: 2.1rem; display: flex; align-items: center; justify-content: center; color: var(--accent-soft); font-size: 1.15rem; }
+
+  .verdict-row { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.15rem; }
+  .dot { width: 0.55rem; height: 0.55rem; border-radius: 50%; display: inline-block; margin-right: 0.32rem; flex: 0 0 auto; }
+  .dot.intact { background: var(--intact); }
+  .dot.risk { background: var(--risk); }
+  .dot.broken { background: var(--broken); }
+  .dot.stale { background: var(--stale); border: 1px solid var(--ink-faint); }
+  .vpill { font-size: 0.72rem; color: var(--ink-soft); display: flex; align-items: center; }
+
+  @media (max-width: 640px) {
+    .flow { flex-direction: column; overflow-x: visible; }
+    .flow-card, .flow-card.branch { width: 100%; }
+    .connector { width: 100%; height: 1.7rem; transform: rotate(90deg); }
+  }
+
+  /* ---------- Journey (fork/merge) ---------- */
+  .journey { display: flex; flex-direction: column; align-items: center; gap: 0; }
+  .j-card {
+    width: min(280px, 100%);
+    border: 1px solid var(--panel-border);
+    border-radius: 4px;
+    padding: 0.85rem 0.9rem;
+    background: var(--bg);
+    text-align: center;
+  }
+  .j-card .title { font-weight: 600; font-size: 0.96rem; }
+  .j-card .note { font-size: 0.79rem; color: var(--ink-soft); margin-top: 0.25rem; }
+  .j-arrow { font-size: 1.2rem; color: var(--accent-soft); padding: 0.35rem 0; }
+  .fork { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; width: 100%; }
+  .fork-branch { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; flex: 1 1 260px; max-width: 300px; }
+  .fork-cond { font-size: 0.72rem; font-family: ui-monospace, monospace; color: var(--accent); }
+  .loop-note {
+    margin-top: 0.9rem;
+    border: 1px dashed var(--rule);
+    border-radius: 4px;
+    padding: 0.5rem 0.8rem;
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+    text-align: center;
+  }
+
+  /* ---------- Timeline ---------- */
+  .timeline { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .day-card { border: 1px solid var(--panel-border); border-radius: 4px; padding: 0.9rem 1rem; background: var(--bg); display: flex; flex-direction: column; gap: 0.55rem; }
+  .day-card .day-label { font-family: ui-monospace, monospace; font-size: 0.78rem; color: var(--accent); letter-spacing: 0.04em; }
+  .day-card h3 { font-size: 1rem; font-weight: 600; }
+  .day-card ul { margin: 0; padding-left: 1.05rem; font-size: 0.83rem; color: var(--ink-soft); display: flex; flex-direction: column; gap: 0.3rem; }
+  .day-card .who { font-size: 0.7rem; color: var(--ink-faint); font-family: ui-monospace, monospace; }
+  .day-card .dod { font-size: 0.78rem; font-style: italic; color: var(--ink-faint); border-top: 1px solid var(--rule); padding-top: 0.4rem; }
+  @media (max-width: 720px) { .timeline { grid-template-columns: 1fr; } }
+
+  /* ---------- Legend & guardrails ---------- */
+  .legend-block { display: flex; flex-direction: column; gap: 1rem; }
+  .legend-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.7rem; }
+  .legend-chip { border-radius: 4px; padding: 0.65rem 0.75rem; font-size: 0.8rem; }
+  .legend-chip .name { font-weight: 700; font-size: 0.84rem; margin-bottom: 0.2rem; }
+  .legend-chip.intact { background: var(--intact-bg); color: var(--intact); }
+  .legend-chip.risk { background: var(--risk-bg); color: var(--risk); }
+  .legend-chip.broken { background: var(--broken-bg); color: var(--broken); }
+  .legend-chip.stale { background: var(--stale-bg); color: var(--stale); }
+  @media (max-width: 640px) { .legend-grid { grid-template-columns: repeat(2, 1fr); } }
+
+  .guardrails { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .grd { font-size: 0.74rem; color: var(--ink-soft); border: 1px solid var(--rule); border-radius: 20px; padding: 0.25rem 0.7rem; }
+
+  /* ---------- Open items ---------- */
+  .open-items {
+    border: 1px dashed var(--accent-warm);
+    border-radius: 4px;
+    padding: 1rem 1.2rem;
+    background: color-mix(in srgb, var(--accent-warm) 8%, var(--panel));
+  }
+  .open-items h2 { font-size: 1.05rem; color: var(--accent-warm); }
+  .open-items ol { margin: 0.6rem 0 0; padding-left: 1.2rem; font-size: 0.88rem; color: var(--ink-soft); display: flex; flex-direction: column; gap: 0.4rem; }
+  .open-items b { color: var(--ink); }
+
+  .colophon { border-top: 1px solid var(--rule); padding-top: 1rem; font-size: 0.78rem; color: var(--ink-faint); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .exhibit, .masthead, .legend-block, .open-items { animation: rise 0.5s ease both; }
+    .exhibit:nth-of-type(2) { animation-delay: 0.05s; }
+    .exhibit:nth-of-type(3) { animation-delay: 0.1s; }
+  }
+  @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+
+<div class="page">
+
+  <header class="masthead">
+    <p class="eyebrow">Thesis Ledger · CFA × AI Hackathon — Alpha Fund (InnovestX)</p>
+    <h1>แผนผังการทำงานทั้งระบบ</h1>
+    <p class="subtitle">ภาพรวม data pipeline, user flow และ build timeline ตาม <span class="mono">requirements.md</span> ฉบับล็อกล่าสุด — ขอบเขตที่จะสร้างจริงใน 3 วัน</p>
+    <div class="badges">
+      <span class="badge strong">2 คน · 3 วัน</span>
+      <span class="badge">Seed: MWG + CPALL</span>
+      <span class="badge">Demo: scripted / replay</span>
+      <span class="badge">อ้างอิง references/requirements.md</span>
+    </div>
+  </header>
+
+  <section class="exhibit">
+    <p class="eyebrow">Exhibit A</p>
+    <h2>Data &amp; Pipeline Flow — จากข้อมูลดิบสู่การตัดสินใจของคน</h2>
+    <p class="desc">Evidence เป็นข้อมูล public จริง (งบ/ข่าว/ราคา) ส่วน thesis note เป็นของที่ทีม mock ขึ้นเอง — ทุก verdict ต้องมี evidence ที่ traceback ถึง page/span ได้เสมอ</p>
+    <div class="panel">
+      <div class="flow">
+        <div class="flow-card branch">
+          <div class="stage">Input</div>
+          <div class="branch-row"><span class="tag">inhouse</span>Mock Thesis Note — ทีมเขียนเอง (2 claims/บริษัท)</div>
+          <div class="branch-row"><span class="tag">public</span>Evidence จริง — งบ/ข่าว/ราคา (MWG + CPALL)</div>
+        </div>
+        <div class="connector">→</div>
+        <div class="flow-card">
+          <div class="stage">Stage 1</div>
+          <div class="title">Thesis Extraction</div>
+          <div class="note">Claude API (JSON) + Human Confirm → Claim (metric+operator+threshold+horizon, is_load_bearing)</div>
+        </div>
+        <div class="connector">→</div>
+        <div class="flow-card">
+          <div class="stage">Stage 2</div>
+          <div class="title">Evidence Harvester</div>
+          <div class="note">document + chunk พร้อม page/span และ tier</div>
+        </div>
+        <div class="connector">→</div>
+        <div class="flow-card branch">
+          <div class="stage">Stage 3 · Adjudicator</div>
+          <div class="branch-row"><span class="tag">ตัวเลข</span>Deterministic Comparator</div>
+          <div class="branch-row"><span class="tag">คุณภาพ</span>LLM + Adversarial Check → ไม่ตรงกัน → Verification Queue</div>
+        </div>
+        <div class="connector">→</div>
+        <div class="flow-card">
+          <div class="stage">Verdict</div>
+          <div class="title">สถานะของ Claim</div>
+          <div class="verdict-row">
+            <span class="vpill"><span class="dot intact"></span>INTACT</span>
+            <span class="vpill"><span class="dot risk"></span>AT_RISK</span>
+            <span class="vpill"><span class="dot broken"></span>BROKEN</span>
+            <span class="vpill"><span class="dot stale"></span>STALE</span>
+          </div>
+          <div class="note">±20% ของ threshold = AT_RISK · decay 100 / 30 วัน</div>
+        </div>
+        <div class="connector">→</div>
+        <div class="flow-card">
+          <div class="stage">Stage 4</div>
+          <div class="title">Decision Matrix</div>
+          <div class="note">Verdict × ราคา → สรุปให้คนพิจารณา (ไม่ตัดสินใจแทน)</div>
+        </div>
+        <div class="connector">→</div>
+        <div class="flow-card">
+          <div class="stage">Human</div>
+          <div class="title">Decision + Audit Log</div>
+          <div class="note">HOLD / ADD / TRIM / EXIT / REVISIT — <span class="mono">decided_by</span> เป็นคนเสมอ, append-only</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="exhibit">
+    <p class="eyebrow">Exhibit B</p>
+    <h2>Screen / User Journey — เดโม 3 วัน (scripted, ไม่ live)</h2>
+    <p class="desc">Portfolio Board เป็นประตูเข้า แถวสีอะไรพาไปหน้าไหนต่อ ก็ยังวนกลับมาที่การตัดสินใจของคนเสมอ — Thesis Card ตัดออกถ้าเวลาไม่พอ</p>
+    <div class="panel">
+      <div class="journey">
+        <div class="j-card">
+          <div class="title">Portfolio Board</div>
+          <div class="note">เรียง 🔴→🟡→🟢→⚪ · แถวไม่เปลี่ยนพับเก็บ · MWG + CPALL</div>
+        </div>
+        <div class="j-arrow">↓</div>
+        <div class="fork">
+          <div class="fork-branch">
+            <div class="fork-cond">คลิกแถว 🔴 หรือ 🟢</div>
+            <div class="j-card">
+              <div class="title">Drop &amp; Trace ⭐</div>
+              <div class="note">ลาก PDF → stream assertions → คลิกดู PDF-highlight คู่กับ Claim/Evidence</div>
+            </div>
+          </div>
+          <div class="fork-branch">
+            <div class="fork-cond">คลิกแถว 🟡</div>
+            <div class="j-card">
+              <div class="title">Verification Queue</div>
+              <div class="note">รายการที่ adjudicator ไม่มั่นใจ — human ตัดสิน (pre-baked ระหว่างเดโม)</div>
+            </div>
+          </div>
+        </div>
+        <div class="j-arrow">↓</div>
+        <div class="j-card">
+          <div class="title">Human Decision</div>
+          <div class="note">คนกดยืนยัน / cite ลิงก์ต้นฉบับ (page/span) — เบา ไม่ log แยกจาก decision</div>
+        </div>
+        <div class="loop-note">↩ ผลอัปเดตกลับไปที่ Portfolio Board เสมอ</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="exhibit">
+    <p class="eyebrow">Exhibit C</p>
+    <h2>3-Day Build Timeline — ใครทำอะไร วันไหน</h2>
+    <p class="desc">แมปตรงกับ stage ใน Exhibit A/B — Day 1 หนักสุดเพราะต้อง source ข้อมูลจริงคู่กับเขียน schema</p>
+    <div class="timeline">
+      <div class="day-card">
+        <div class="day-label">DAY 1 — Foundation</div>
+        <h3>Schema + Data Sourcing</h3>
+        <ul>
+          <li>รัน B1 falsifiability test ก่อนเริ่มโค้ด</li>
+          <li class="who">คนที่ 1</li>
+          <li>schema + seed DB + entity map + หา public data MWG</li>
+          <li class="who">คนที่ 2</li>
+          <li>หา public data CPALL + เขียน mock thesis note + เริ่ม extraction prompt</li>
+        </ul>
+        <div class="dod">DoD: DB seed ครบ 2 บริษัท, verdict คำนวณได้ ≥1 ตัวจากข้อมูลจริง</div>
+      </div>
+      <div class="day-card">
+        <div class="day-label">DAY 2 — Core Loop</div>
+        <h3>Pipeline + Hero Screen</h3>
+        <ul>
+          <li class="who">คนที่ 1</li>
+          <li>Drop &amp; Trace ต่อ pipeline จริง (scripted/replay)</li>
+          <li class="who">คนที่ 2</li>
+          <li>Adjudicator (comparator + adversarial บน MWG) + traffic-light rule + freshness nudge</li>
+        </ul>
+        <div class="dod">DoD: MWG money-shot ถูกต้อง, CPALL โชว์ verdict ตัดกัน</div>
+      </div>
+      <div class="day-card">
+        <div class="day-label">DAY 3 — Integration</div>
+        <h3>Polish + Rehearsal</h3>
+        <ul>
+          <li class="who">ทั้งคู่</li>
+          <li>Portfolio Board + ปุ่ม cite + Verification Queue (static) + เช็คคำต้องห้าม</li>
+          <li>ซ้อมสคริปต์เต็มรูปแบบ ≥3 รอบ — แก้เฉพาะ show-stopper</li>
+        </ul>
+        <div class="dod">ตัดแน่นอน: Slack/LINE, live demo, backtest framework, Thesis Card</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="legend-block">
+    <p class="eyebrow">Key</p>
+    <div class="legend-grid">
+      <div class="legend-chip intact"><div class="name">🟢 INTACT</div>ค่าจริงผ่าน threshold + ≥2 แหล่งอิสระ ไม่มี evidence ค้าน</div>
+      <div class="legend-chip risk"><div class="name">🟡 AT_RISK</div>โมเดลเห็นไม่ตรงกัน หรืออยู่ในโซน ±20% ของ threshold</div>
+      <div class="legend-chip broken"><div class="name">🔴 BROKEN</div>evidence มี page/span ขัด threshold ชัดเจน</div>
+      <div class="legend-chip stale"><div class="name">⚪ STALE</div>ไม่มี evidence ใหม่ภายใน decay window (100/30 วัน)</div>
+    </div>
+    <div class="guardrails">
+      <span class="grd">Grounding บังคับ (page/span)</span>
+      <span class="grd">Abstention → NO_DATA</span>
+      <span class="grd">Human veto ทุก decision</span>
+      <span class="grd">Tier policy (licensed ≠ ส่ง LLM)</span>
+      <span class="grd">as_of ≠ knowledge_date</span>
+    </div>
+  </section>
+
+  <section class="open-items">
+    <h2 class="eyebrow" style="margin:0;">ยังไม่ปิด — ต้องทำก่อน/ระหว่าง Day 1</h2>
+    <ol>
+      <li><b>B1 —</b> ยังไม่ได้ทดสอบว่า research note จริงมี numeric criteria พอ falsify ได้ไหม (ทำ manual test 30–60 นาทีก่อนล็อกงาน Day 1)</li>
+      <li><b>D2 —</b> ยังไม่มีเจ้าภาพยืนยันว่า MWG money-shot ไม่ใช่ hindsight-fitted (ต้องมีคนรับผิดชอบ + กำหนดเวลา)</li>
+    </ol>
+  </section>
+
+  <footer class="colophon">
+    อ้างอิงจาก <span class="mono">.claude/skills/thesis-ledger/references/requirements.md</span> — เอกสารนี้เป็นภาพสรุปเพื่อความเข้าใจก่อนเข้า design phase ไม่ใช่ requirement ฉบับทางการ (ดู requirements.md เป็นแหล่งจริงเสมอ)
+  </footer>
+
+</div>

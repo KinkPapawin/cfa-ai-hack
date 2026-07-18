@@ -1,0 +1,448 @@
+<title>Thesis Ledger — Design System</title>
+<style>
+  /* ============ TOKENS ============ */
+  :root {
+    /* neutrals — warm research-paper bias, deliberately not pure grey */
+    --paper: #F4F2EC;
+    --surface: #FCFBF8;
+    --sunken: #ECE9E1;
+    --ink: #1C1D19;
+    --ink-2: #55564E;
+    --ink-muted: #86877C;
+    --rule: #D9D5C9;
+    --rule-strong: #C4BFAF;
+    /* accent — institutional ink-blue, used sparingly */
+    --accent: #2B3D5B;
+    --accent-soft: #5A6E93;
+    --accent-tint: #E6E9F0;
+    /* status — validated (light: all checks pass) */
+    --intact: #2E7D52;   --intact-tint: #E2EFE6;   --intact-ink: #266845;
+    --risk: #C08A1E;     --risk-tint: #F6ECD3;     --risk-ink: #8F6612;
+    --broken: #A8322A;   --broken-tint: #F5DED9;   --broken-ink: #8E2A23;
+    --stale: #6B7169;    --stale-tint: #E7E6DF;    --stale-ink: #565B54;
+
+    --font-serif: Charter, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+
+    --r-sm: 3px; --r-md: 5px; --r-lg: 8px;
+    --shadow: 0 1px 2px rgba(28,29,25,0.05), 0 2px 8px rgba(28,29,25,0.04);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #15171B; --surface: #1D1F24; --sunken: #131418;
+      --ink: #E8E7DF; --ink-2: #A8A99E; --ink-muted: #74756B;
+      --rule: #30332F; --rule-strong: #3E423C;
+      --accent: #90A6D6; --accent-soft: #6E86B8; --accent-tint: #22283440;
+      --intact: #48A46E; --intact-tint: #16281D; --intact-ink: #6FC18F;
+      --risk: #CBA23A;   --risk-tint: #2C2410;   --risk-ink: #DCB558;
+      --broken: #E06A4E; --broken-tint: #2E1A15; --broken-ink: #EA8871;
+      --stale: #9FA298;  --stale-tint: #23241F;  --stale-ink: #B0B2A9;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 2px 10px rgba(0,0,0,0.25);
+    }
+  }
+  :root[data-theme="light"] {
+    --paper: #F4F2EC; --surface: #FCFBF8; --sunken: #ECE9E1;
+    --ink: #1C1D19; --ink-2: #55564E; --ink-muted: #86877C;
+    --rule: #D9D5C9; --rule-strong: #C4BFAF;
+    --accent: #2B3D5B; --accent-soft: #5A6E93; --accent-tint: #E6E9F0;
+    --intact: #2E7D52; --intact-tint: #E2EFE6; --intact-ink: #266845;
+    --risk: #C08A1E; --risk-tint: #F6ECD3; --risk-ink: #8F6612;
+    --broken: #A8322A; --broken-tint: #F5DED9; --broken-ink: #8E2A23;
+    --stale: #6B7169; --stale-tint: #E7E6DF; --stale-ink: #565B54;
+    --shadow: 0 1px 2px rgba(28,29,25,0.05), 0 2px 8px rgba(28,29,25,0.04);
+  }
+  :root[data-theme="dark"] {
+    --paper: #15171B; --surface: #1D1F24; --sunken: #131418;
+    --ink: #E8E7DF; --ink-2: #A8A99E; --ink-muted: #74756B;
+    --rule: #30332F; --rule-strong: #3E423C;
+    --accent: #90A6D6; --accent-soft: #6E86B8; --accent-tint: #22283440;
+    --intact: #48A46E; --intact-tint: #16281D; --intact-ink: #6FC18F;
+    --risk: #CBA23A; --risk-tint: #2C2410; --risk-ink: #DCB558;
+    --broken: #E06A4E; --broken-tint: #2E1A15; --broken-ink: #EA8871;
+    --stale: #9FA298; --stale-tint: #23241F; --stale-ink: #B0B2A9;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 2px 10px rgba(0,0,0,0.25);
+  }
+
+  * { box-sizing: border-box; }
+  html { color-scheme: light dark; }
+  body { background: var(--paper); color: var(--ink); }
+  .page {
+    font-family: var(--font-sans);
+    max-width: 960px; margin: 0 auto;
+    padding: clamp(1.5rem,4vw,3.5rem) clamp(1.1rem,4vw,1.5rem) 5rem;
+    display: flex; flex-direction: column; gap: clamp(2.6rem,5vw,3.6rem);
+    line-height: 1.5;
+  }
+  .serif { font-family: var(--font-serif); }
+  .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+  h1,h2,h3 { font-family: var(--font-serif); margin: 0; text-wrap: balance; font-weight: 600; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--accent-soft); margin: 0 0 0.55rem;
+  }
+
+  /* masthead */
+  .masthead { border-bottom: 1px solid var(--rule); padding-bottom: 1.9rem; }
+  .masthead h1 { font-size: clamp(1.9rem,4.5vw,2.6rem); letter-spacing: -0.015em; }
+  .masthead .sub { color: var(--ink-2); font-size: 1.03rem; margin-top: 0.5rem; max-width: 60ch; }
+  .masthead .meta { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.2rem; }
+  .tag {
+    font-family: var(--font-mono); font-size: 0.72rem; padding: 0.26rem 0.6rem;
+    border: 1px solid var(--rule-strong); border-radius: var(--r-sm);
+    color: var(--ink-2); background: var(--surface);
+  }
+  .tag.on { color: var(--accent); border-color: var(--accent-soft); }
+
+  section.block { display: flex; flex-direction: column; gap: 1.15rem; }
+  section.block > .lead { color: var(--ink-2); max-width: 70ch; font-size: 0.96rem; }
+  section.block > h2 { font-size: clamp(1.25rem,2.8vw,1.6rem); }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--rule);
+    border-radius: var(--r-lg); padding: clamp(1.1rem,3vw,1.7rem);
+    box-shadow: var(--shadow);
+  }
+
+  /* ---- principles ---- */
+  .principles { display: grid; grid-template-columns: repeat(2,1fr); gap: 0.9rem; }
+  .principle { border: 1px solid var(--rule); border-radius: var(--r-md); padding: 1rem 1.1rem; background: var(--surface); }
+  .principle .n { font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent-soft); }
+  .principle h3 { font-size: 1.02rem; margin: 0.3rem 0 0.35rem; }
+  .principle p { margin: 0; font-size: 0.85rem; color: var(--ink-2); }
+  @media (max-width: 640px){ .principles { grid-template-columns: 1fr; } }
+
+  /* ---- color swatches ---- */
+  .swatch-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 0.7rem; }
+  .swatch { border: 1px solid var(--rule); border-radius: var(--r-md); overflow: hidden; background: var(--surface); }
+  .swatch .chip { height: 54px; }
+  .swatch .meta2 { padding: 0.5rem 0.6rem; }
+  .swatch .nm { font-size: 0.8rem; font-weight: 600; }
+  .swatch .hx { font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-muted); }
+  @media (max-width: 640px){ .swatch-grid { grid-template-columns: repeat(2,1fr); } }
+
+  .status-legend { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.3rem; }
+
+  /* ---- status pill (triple-encoded: shape + color + word) ---- */
+  .pill {
+    display: inline-flex; align-items: center; gap: 0.42rem;
+    font-family: var(--font-sans); font-size: 0.74rem; font-weight: 600;
+    letter-spacing: 0.02em; padding: 0.24rem 0.6rem 0.24rem 0.5rem;
+    border-radius: 20px; border: 1px solid transparent; white-space: nowrap;
+  }
+  .pill .glyph { font-size: 0.66rem; line-height: 1; }
+  .pill.intact { color: var(--intact-ink); background: var(--intact-tint); border-color: color-mix(in srgb, var(--intact) 30%, transparent); }
+  .pill.risk   { color: var(--risk-ink);   background: var(--risk-tint);   border-color: color-mix(in srgb, var(--risk) 32%, transparent); }
+  .pill.broken { color: var(--broken-ink); background: var(--broken-tint); border-color: color-mix(in srgb, var(--broken) 32%, transparent); }
+  .pill.stale  { color: var(--stale-ink);  background: var(--stale-tint);  border-color: color-mix(in srgb, var(--stale) 34%, transparent); }
+
+  /* ---- type specimens ---- */
+  .type-rows { display: flex; flex-direction: column; gap: 1.1rem; }
+  .type-row { display: grid; grid-template-columns: 108px 1fr; gap: 1rem; align-items: baseline; padding-bottom: 1rem; border-bottom: 1px solid var(--rule); }
+  .type-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .type-row .role { font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-muted); letter-spacing: 0.04em; }
+  .type-row .role span { display: block; color: var(--accent-soft); margin-top: 0.15rem; }
+  @media (max-width: 560px){ .type-row { grid-template-columns: 1fr; gap: 0.3rem; } }
+
+  /* ================= SPECIMEN: PORTFOLIO BOARD ================= */
+  .specimen-frame { border: 1px solid var(--rule); border-radius: var(--r-lg); overflow: hidden; background: var(--surface); box-shadow: var(--shadow); }
+  .spec-head { display: flex; align-items: center; justify-content: space-between; padding: 0.7rem 1rem; background: var(--sunken); border-bottom: 1px solid var(--rule); }
+  .spec-head .t { font-family: var(--font-serif); font-weight: 600; font-size: 0.98rem; }
+  .spec-head .c { font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-muted); }
+
+  .pf-row { display: grid; grid-template-columns: 128px 1fr auto; gap: 0.9rem; align-items: center; padding: 0.85rem 1rem; border-bottom: 1px solid var(--rule); }
+  .pf-row:last-child { border-bottom: none; }
+  .pf-row:hover { background: color-mix(in srgb, var(--accent) 4%, var(--surface)); }
+  .pf-id .tk { font-family: var(--font-mono); font-weight: 600; font-size: 0.92rem; letter-spacing: 0.02em; }
+  .pf-id .mk { font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-muted); }
+  .pf-claim { font-family: var(--font-serif); font-size: 0.92rem; color: var(--ink); line-height: 1.35; }
+  .pf-claim .ref { font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-muted); }
+  .pf-metric { text-align: right; display: flex; flex-direction: column; gap: 0.15rem; }
+  .pf-metric .delta { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 0.9rem; font-weight: 600; }
+  .pf-metric .delta.neg { color: var(--broken-ink); }
+  .pf-metric .delta.warn { color: var(--risk-ink); }
+  .pf-metric .delta.pos { color: var(--intact-ink); }
+  .pf-metric .base { font-family: var(--font-mono); font-size: 0.68rem; color: var(--ink-muted); }
+  .pf-collapsed { padding: 0.65rem 1rem; font-size: 0.78rem; color: var(--ink-muted); background: var(--sunken); font-family: var(--font-sans); display:flex; align-items:center; gap:0.5rem; }
+  @media (max-width: 620px){
+    .pf-row { grid-template-columns: 100px 1fr; }
+    .pf-metric { grid-column: 1 / -1; text-align: left; flex-direction: row; gap: 0.5rem; align-items: baseline; }
+  }
+
+  /* ================= SPECIMEN: CLAIM CARD ================= */
+  .claim-card { padding: 1.3rem 1.4rem; }
+  .claim-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 0.9rem; }
+  .claim-top .co { font-family: var(--font-serif); font-size: 1.15rem; font-weight: 600; }
+  .claim-top .co small { display:block; font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-muted); font-weight: 400; margin-top: 0.2rem; }
+  .claim-statement { font-family: var(--font-serif); font-size: 1.05rem; line-height: 1.45; color: var(--ink); padding: 0.7rem 0 0.9rem; border-top: 1px solid var(--rule); }
+  .claim-statement .load { font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent-soft); border-radius: var(--r-sm); padding: 0.08rem 0.35rem; vertical-align: middle; margin-left: 0.4rem; }
+  .compare { display: flex; align-items: baseline; gap: 0.9rem; padding: 0.7rem 0.9rem; background: var(--sunken); border-radius: var(--r-md); margin-bottom: 1rem; flex-wrap: wrap; }
+  .compare .actual { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 1.6rem; font-weight: 600; color: var(--broken-ink); }
+  .compare .vs { font-family: var(--font-sans); font-size: 0.78rem; color: var(--ink-muted); }
+  .compare .target { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 1.1rem; color: var(--ink-2); }
+  .compare .horizon { font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-muted); margin-left: auto; }
+
+  .evidence-label { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.5rem; }
+  .ev-row { display: flex; align-items: center; gap: 0.7rem; padding: 0.55rem 0; border-top: 1px solid var(--rule); font-size: 0.85rem; }
+  .ev-row .tier { font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.05em; text-transform: uppercase; padding: 0.1rem 0.4rem; border-radius: var(--r-sm); white-space: nowrap; }
+  .ev-row .tier.public { background: var(--accent-tint); color: var(--accent); }
+  .ev-row .tier.inhouse { background: var(--intact-tint); color: var(--intact-ink); }
+  .ev-row .txt { flex: 1; color: var(--ink-2); }
+  .ev-row .trace { font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent-soft); white-space: nowrap; text-decoration: none; border-bottom: 1px dashed var(--accent-soft); }
+  .ev-row .trace:hover { color: var(--accent); }
+
+  /* verdict timeline */
+  .timeline-strip { display: flex; align-items: center; gap: 0.35rem; margin-top: 1rem; padding-top: 0.9rem; border-top: 1px solid var(--rule); flex-wrap: wrap; }
+  .tl-label { font-family: var(--font-mono); font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-muted); margin-right: 0.3rem; }
+  .tl-node { width: 0.66rem; height: 0.66rem; border-radius: 50%; }
+  .tl-node.intact { background: var(--intact); }
+  .tl-node.risk { background: var(--risk); }
+  .tl-node.broken { background: var(--broken); }
+  .tl-node.stale { background: transparent; border: 1.5px solid var(--stale); }
+  .tl-connect { width: 14px; height: 1px; background: var(--rule-strong); }
+  .tl-date { font-family: var(--font-mono); font-size: 0.66rem; color: var(--ink-muted); margin-left: 0.4rem; }
+
+  /* implementation note */
+  .impl { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .impl .col h3 { font-size: 0.98rem; margin-bottom: 0.5rem; }
+  .impl pre { margin: 0; background: var(--sunken); border: 1px solid var(--rule); border-radius: var(--r-md); padding: 0.8rem 0.9rem; overflow-x: auto; }
+  .impl code { font-family: var(--font-mono); font-size: 0.76rem; color: var(--ink-2); line-height: 1.6; }
+  .impl .col p { font-size: 0.85rem; color: var(--ink-2); margin: 0.4rem 0 0; }
+  @media (max-width: 640px){ .impl { grid-template-columns: 1fr; } }
+
+  .validate-note {
+    display: flex; gap: 0.7rem; align-items: flex-start;
+    border: 1px solid var(--intact); background: var(--intact-tint);
+    border-radius: var(--r-md); padding: 0.8rem 1rem; font-size: 0.82rem; color: var(--intact-ink);
+  }
+  .validate-note .vg { font-weight: 700; }
+
+  .colophon { border-top: 1px solid var(--rule); padding-top: 1.1rem; font-size: 0.78rem; color: var(--ink-muted); }
+
+  @media (prefers-reduced-motion: no-preference){
+    section.block, .masthead { animation: rise .5s ease both; }
+  }
+  @keyframes rise { from { opacity:0; transform: translateY(6px);} to { opacity:1; transform: none;} }
+</style>
+
+<div class="page">
+
+  <header class="masthead">
+    <p class="eyebrow">Thesis Ledger · Design System v0.1 — Pre-Build Foundation</p>
+    <h1>ระบบออกแบบของผลิตภัณฑ์</h1>
+    <p class="sub">รากฐานงานออกแบบที่ตัดสินใจ<em>ก่อน</em>เขียนหน้าจอ — token, ระบบตัวอักษร, และ component ที่คุมให้ทั้ง 4 หน้าจอเป็นภาษาเดียวกัน นี่คือสิ่งที่แยก "ผลิตภัณฑ์มืออาชีพ" ออกจากงานที่ดูสุ่มเลือกทีละหน้า</p>
+    <div class="meta">
+      <span class="tag on">Editorial-Institutional</span>
+      <span class="tag on">Light-first · dark-ready</span>
+      <span class="tag on">Next.js</span>
+      <span class="tag">serif + sans + mono</span>
+      <span class="tag">สลับธีมได้ที่ปุ่มมุมขวาบน</span>
+    </div>
+  </header>
+
+  <!-- PRINCIPLES -->
+  <section class="block">
+    <p class="eyebrow">01 · Design Principles</p>
+    <h2>หลักการออกแบบ — เฉพาะสำหรับเครื่องมือเฝ้า thesis</h2>
+    <p class="lead">หลักการพวกนี้ไม่ใช่คำสวยหรู แต่เป็นข้อบังคับที่ทุก component ต้องเคารพ — มาจากธรรมชาติของผลิตภัณฑ์ที่ "false alarm เยอะ = ความน่าเชื่อถือตาย"</p>
+    <div class="principles">
+      <div class="principle">
+        <div class="n">P1</div>
+        <h3>เงียบโดยปริยาย</h3>
+        <p>หน้าจอต้องนิ่งเมื่อไม่มีอะไรเปลี่ยน แถวที่ INTACT พับเก็บ ไม่แย่งความสนใจ — ความเร่งด่วนสงวนไว้ให้ 🔴 จริง ๆ เท่านั้น</p>
+      </div>
+      <div class="principle">
+        <div class="n">P2</div>
+        <h3>สถานะอ่านได้ใน 1 วินาที</h3>
+        <p>ทุก verdict เข้ารหัส 3 ชั้น — รูปทรง + สี + คำ — ไม่เคยใช้สีอย่างเดียว คนตาบอดสีต้องแยก 🔴 ออกจาก 🟢 ได้เสมอ</p>
+      </div>
+      <div class="principle">
+        <div class="n">P3</div>
+        <h3>หลักฐานเป็นพลเมืองชั้นหนึ่ง</h3>
+        <p>ทุกตัวเลข/verdict มีปุ่มสาวกลับไปหน้า/บรรทัดต้นฉบับได้ — ไม่มี claim ไหนลอย ๆ โดยไม่มี provenance</p>
+      </div>
+      <div class="principle">
+        <div class="n">P4</div>
+        <h3>ความหนาแน่นระดับมืออาชีพ</h3>
+        <p>PM สแกน ไม่ได้ถูกจูงมือ — ตัวเลขใช้ตาราง (tabular numerals) เรียงชิด ข้อมูลแน่นแต่ไม่รก อ่านเหมือน research desk</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- COLOR -->
+  <section class="block">
+    <p class="eyebrow">02 · Color Tokens</p>
+    <h2>สี — เลือกอย่างตั้งใจ ไม่ใช่ค่า default</h2>
+    <p class="lead">พื้นหลังเป็นโทนกระดาษอุ่น (ไม่ใช่เทากลาง ๆ) accent เป็นน้ำเงินหมึกสถาบัน ใช้เท่าที่จำเป็น ส่วนสีสถานะ 4 ตัวเป็น <b>semantic status</b> ที่สงวนไว้ ห้ามเอาไปใช้เป็นสีตกแต่งอื่น</p>
+
+    <div class="validate-note">
+      <span class="vg">✓ VALIDATED</span>
+      <span>สีสถานะผ่านการตรวจด้วยสคริปต์จริง (ไม่ใช่กะด้วยตา) — light mode ผ่านทุกเช็ค: lightness band, chroma floor, CVD separation, normal-vision floor ≥15, contrast ≥3:1 · ส่วน dark mode red↔amber อยู่ที่ ΔE ~14 ซึ่งเป็นข้อยกเว้นที่อนุญาตของ status color เพราะมีรูปทรง+คำกำกับเสมอ ไม่ได้พึ่งสีอย่างเดียว</span>
+    </div>
+
+    <div class="card">
+      <p class="evidence-label">Neutrals &amp; Accent</p>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="chip" style="background:var(--paper)"></div><div class="meta2"><div class="nm">Paper</div><div class="hx">app background</div></div></div>
+        <div class="swatch"><div class="chip" style="background:var(--surface)"></div><div class="meta2"><div class="nm">Surface</div><div class="hx">cards</div></div></div>
+        <div class="swatch"><div class="chip" style="background:var(--ink)"></div><div class="meta2"><div class="nm">Ink</div><div class="hx">primary text</div></div></div>
+        <div class="swatch"><div class="chip" style="background:var(--accent)"></div><div class="meta2"><div class="nm">Accent</div><div class="hx">ink-blue</div></div></div>
+      </div>
+
+      <p class="evidence-label" style="margin-top:1.2rem;">Status — semantic, reserved (shape + color + word)</p>
+      <div class="status-legend">
+        <span class="pill intact"><span class="glyph">●</span> INTACT</span>
+        <span class="pill risk"><span class="glyph">◆</span> AT_RISK</span>
+        <span class="pill broken"><span class="glyph">■</span> BROKEN</span>
+        <span class="pill stale"><span class="glyph">○</span> STALE</span>
+      </div>
+      <div class="swatch-grid" style="margin-top:0.8rem;">
+        <div class="swatch"><div class="chip" style="background:var(--intact)"></div><div class="meta2"><div class="nm">INTACT</div><div class="hx">เหตุผลยังจริง</div></div></div>
+        <div class="swatch"><div class="chip" style="background:var(--risk)"></div><div class="meta2"><div class="nm">AT_RISK</div><div class="hx">ก้ำกึ่ง ±20%</div></div></div>
+        <div class="swatch"><div class="chip" style="background:var(--broken)"></div><div class="meta2"><div class="nm">BROKEN</div><div class="hx">มีหลักฐานขัด</div></div></div>
+        <div class="swatch"><div class="chip" style="background:var(--stale)"></div><div class="meta2"><div class="nm">STALE</div><div class="hx">ไม่มีใครเช็ค</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TYPE -->
+  <section class="block">
+    <p class="eyebrow">03 · Type System</p>
+    <h2>ตัวอักษร 3 บทบาท — แต่ละอันมีหน้าที่ชัด</h2>
+    <p class="lead">Serif ถือ "ความคิด/เหตุผล" (thesis, claim, หัวข้อ) ให้ความน่าเชื่อถือแบบงานวิจัย · Sans ถือ UI (ปุ่ม ป้าย นำทาง) · Mono ถือ "ข้อมูล" (ticker ตัวเลข threshold เลขหน้า) ด้วย tabular numerals ให้ตัวเลขเรียงตรงคอลัมน์เสมอ</p>
+    <div class="card">
+      <div class="type-rows">
+        <div class="type-row">
+          <div class="role">Serif<span>Display</span></div>
+          <div class="serif" style="font-size:1.9rem; font-weight:600; line-height:1.15;">Mobile World Group</div>
+        </div>
+        <div class="type-row">
+          <div class="role">Serif<span>Claim / Reasoning</span></div>
+          <div class="serif" style="font-size:1.1rem; line-height:1.45;">“Same-store sales growth จะเกิน 5% YoY ภายใน 2 ไตรมาส”</div>
+        </div>
+        <div class="type-row">
+          <div class="role">Sans<span>UI / Body</span></div>
+          <div style="font-size:0.95rem; color:var(--ink-2);">ป้ายกำกับ ปุ่มคำสั่ง และเนื้อความในส่วนติดต่อผู้ใช้ — คมชัด อ่านง่าย เป็นกลาง</div>
+        </div>
+        <div class="type-row">
+          <div class="role">Mono<span>Data · tabular</span></div>
+          <div class="mono" style="font-size:0.95rem; color:var(--ink);">MWG · VN&nbsp;&nbsp;&nbsp;4.2% &nbsp;vs&nbsp; &gt;5.0% &nbsp;&nbsp;pg 12 · ln 4</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SPECIMEN: PORTFOLIO BOARD -->
+  <section class="block">
+    <p class="eyebrow">04 · Component in situ — Portfolio Board</p>
+    <h2>หน้าจอจริง ไม่ใช่คำอธิบาย</h2>
+    <p class="lead">นี่คือ component ประกอบร่างจริงในภาษา Editorial-Institutional — เรียงแย่สุดขึ้นก่อน (🔴→🟡→🟢→⚪) ตัวที่ INTACT พับเก็บตามหลักการ P1</p>
+    <div class="specimen-frame">
+      <div class="spec-head">
+        <span class="t">Portfolio Board</span>
+        <span class="c">2 companies · updated 09:14</span>
+      </div>
+      <div class="pf-row">
+        <div class="pf-id"><div class="tk">MWG</div><div class="mk">VN · retail</div></div>
+        <div class="pf-claim">Margin claim ขัดกับ field note ของทีม<br><span class="ref">C1 · load-bearing · traced pg 12</span></div>
+        <div class="pf-metric"><span class="pill broken"><span class="glyph">■</span> BROKEN</span><span class="delta neg">−18%</span><span class="base">vs &gt;5.0% target</span></div>
+      </div>
+      <div class="pf-row">
+        <div class="pf-id"><div class="tk">CPALL</div><div class="mk">TH · retail</div></div>
+        <div class="pf-claim">SSSG อยู่ในโซนก้ำกึ่ง — รอยืนยันไตรมาสถัดไป<br><span class="ref">C2 · 1 source · pending verify</span></div>
+        <div class="pf-metric"><span class="pill risk"><span class="glyph">◆</span> AT_RISK</span><span class="delta warn">+2.0%</span><span class="base">vs &gt;5.0% target</span></div>
+      </div>
+      <div class="pf-collapsed"><span class="pill stale"><span class="glyph">○</span> STALE</span> 1 claim ไม่มีหลักฐานใหม่เกิน 100 วัน — กดเพื่อขยาย</div>
+    </div>
+  </section>
+
+  <!-- SPECIMEN: CLAIM CARD -->
+  <section class="block">
+    <p class="eyebrow">05 · Component in situ — Thesis / Claim Card</p>
+    <h2>การ์ด claim พร้อมหลักฐานและ trace</h2>
+    <p class="lead">หัวใจของ P3 — ตัวเลขเด่นด้วย mono ขนาดใหญ่ หลักฐานแต่ละชิ้นมี tier + ปุ่มสาวกลับหน้า/บรรทัด และแถบประวัติ verdict ด้านล่าง</p>
+    <div class="card claim-card">
+      <div class="claim-top">
+        <div class="co">Mobile World Group <small>MWG · Vietnam · retail</small></div>
+        <span class="pill broken"><span class="glyph">■</span> BROKEN</span>
+      </div>
+      <div class="claim-statement">“Gross margin จะไม่หดตัวต่ำกว่า guidance ที่ 19%”<span class="load">Load-bearing</span></div>
+      <div class="compare">
+        <span class="actual">16.4%</span>
+        <span class="vs">ต่ำกว่าเกณฑ์</span>
+        <span class="target">&gt; 19.0%</span>
+        <span class="horizon">horizon · 2 ไตรมาส</span>
+      </div>
+      <p class="evidence-label">Evidence · 2 sources</p>
+      <div class="ev-row">
+        <span class="tier public">public</span>
+        <span class="txt">งบ Q2/2025 — gross margin รายงานที่ 16.4%</span>
+        <a class="trace" href="#">→ pg 12 · ln 4</a>
+      </div>
+      <div class="ev-row">
+        <span class="tier inhouse">inhouse</span>
+        <span class="txt">Field note ทีม — ราคาแข่งขันรุนแรงกดดัน margin</span>
+        <a class="trace" href="#">→ note 03 · 00:41</a>
+      </div>
+      <div class="timeline-strip">
+        <span class="tl-label">Verdict history</span>
+        <span class="tl-node intact"></span><span class="tl-connect"></span>
+        <span class="tl-node intact"></span><span class="tl-connect"></span>
+        <span class="tl-node risk"></span><span class="tl-connect"></span>
+        <span class="tl-node broken"></span>
+        <span class="tl-date">Q4·24 → Q2·25</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- IMPLEMENTATION -->
+  <section class="block">
+    <p class="eyebrow">06 · Implementation — Next.js</p>
+    <h2>Token เชื่อมเข้าโค้ดจริงอย่างไร</h2>
+    <p class="lead">Design token ทั้งหมดเป็น CSS custom properties → ใช้ได้ทั้งใน <span class="mono">globals.css</span> และ map เข้า Tailwind theme ได้ตรง ๆ ส่วนฟอนต์จริงควรใช้ <span class="mono">next/font</span> โหลด serif ที่มีลิขสิทธิ์ (เช่น Source Serif / Newsreader) แทน system stack เพื่อความเป็นเอกลักษณ์</p>
+    <div class="impl">
+      <div class="col">
+        <h3>globals.css</h3>
+        <pre><code>:root {
+  --paper: #F4F2EC;
+  --surface: #FCFBF8;
+  --ink: #1C1D19;
+  --accent: #2B3D5B;
+  --intact: #2E7D52;
+  --risk:   #C08A1E;
+  --broken: #A8322A;
+  --stale:  #6B7169;
+}
+[data-theme="dark"] { /* … */ }</code></pre>
+        <p>ธีมสลับด้วย <span class="mono">data-theme</span> บน &lt;html&gt; — SSR-safe ไม่มี flash</p>
+      </div>
+      <div class="col">
+        <h3>tailwind.config.ts</h3>
+        <pre><code>theme: { extend: {
+  colors: {
+    paper: "var(--paper)",
+    ink: "var(--ink)",
+    accent: "var(--accent)",
+    status: {
+      intact: "var(--intact)",
+      risk:   "var(--risk)",
+      broken: "var(--broken)",
+      stale:  "var(--stale)",
+    },
+  },
+  fontFamily: {
+    serif: ["var(--font-serif)"],
+    mono:  ["var(--font-mono)"],
+  },
+}}</code></pre>
+        <p>Component อ่าน token ผ่าน class — เปลี่ยนธีมทีเดียว กระทบทั้งแอป</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="colophon">
+    Thesis Ledger Design System v0.1 · Editorial-Institutional · light-first · Next.js — ร่างก่อนเข้า build phase สีสถานะผ่าน validator ของ dataviz skill แล้ว ฟอนต์ในเดโมนี้ใช้ system stack (Charter/Georgia · system-ui · SF Mono) โปรดสลับเป็นฟอนต์ลิขสิทธิ์จริงตอน build
+  </footer>
+
+</div>
