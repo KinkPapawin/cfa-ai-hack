@@ -11,6 +11,7 @@
     --risk: #C08A1E; --risk-tint: #F6ECD3; --risk-ink: #8F6612;
     --broken: #A8322A; --broken-tint: #F5DED9; --broken-ink: #8E2A23;
     --stale: #6B7169; --stale-tint: #E7E6DF; --stale-ink: #565B54;
+    --brass: #9A6B2F; --brass-tint: #F0E4CF; --brass-ink: #7C551F;
     --font-serif: Charter, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
     --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, Helvetica, Arial, sans-serif;
     --font-mono: ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
@@ -422,6 +423,125 @@
   .callout { border-left: 3px solid var(--accent); background: var(--accent-tint); padding: 0.85rem 1.05rem; border-radius: 0 var(--r-md) var(--r-md) 0; font-size: 0.85rem; color: var(--ink-2); margin-top: 1.2rem; }
   .callout b { color: var(--ink); }
 
+  /* ============================================================
+     DATA ROOM (view-dataroom) — merged; all selectors scoped to
+     #view-dataroom / #dr-scrim so nothing leaks into other screens
+     ============================================================ */
+  #view-dataroom .searchbar { display: flex; align-items: center; gap: 0.6rem; padding: 0.72rem 0.95rem; margin-bottom: 1.1rem; background: var(--surface); border: 1px solid var(--rule-strong); border-radius: var(--r-lg); box-shadow: var(--shadow); }
+  #view-dataroom .searchbar .ic { color: var(--accent-soft); font-size: 1.05rem; }
+  #view-dataroom .searchbar input { flex: 1; border: none; background: none; outline: none; font-size: 0.95rem; color: var(--ink); font-family: var(--font-sans); }
+  #view-dataroom .searchbar input::placeholder { color: var(--ink-muted); }
+  #view-dataroom .searchbar .hintk { font-family: var(--font-mono); font-size: 0.64rem; color: var(--ink-muted); border: 1px solid var(--rule); border-radius: var(--r-sm); padding: 0.12rem 0.4rem; }
+
+  #view-dataroom .col-body { display: flex; flex-direction: column; }
+  #view-dataroom .col-empty { display: none; padding: 1.1rem; text-align: center; font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-muted); }
+
+  #view-dataroom .tier, #dr-scrim .tier { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.05em; text-transform: uppercase; padding: 0.14rem 0.44rem; border-radius: var(--r-sm); white-space: nowrap; }
+  #view-dataroom .tier.public, #dr-scrim .tier.public { background: var(--accent-tint); color: var(--accent); }
+  #view-dataroom .tier.broker, #dr-scrim .tier.broker { background: var(--brass-tint); color: var(--brass-ink); }
+  #view-dataroom .tier.internal, #dr-scrim .tier.internal { background: var(--intact-tint); color: var(--intact-ink); }
+  #view-dataroom .tdot { width: 0.62rem; height: 0.62rem; border-radius: 2px; flex: 0 0 auto; }
+  #view-dataroom .tdot.public { background: var(--accent); }
+  #view-dataroom .tdot.broker { background: var(--brass); }
+  #view-dataroom .tdot.internal { background: var(--intact); }
+
+  #view-dataroom .control-row { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  #view-dataroom .stock-switch { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+  #view-dataroom .stock-switch .lbl { font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); margin-right: 0.2rem; }
+  #view-dataroom .stock-pill { display: inline-flex; align-items: baseline; gap: 0.4rem; font-family: var(--font-mono); font-size: 0.84rem; font-weight: 600; padding: 0.36rem 0.75rem; border-radius: 20px; border: 1px solid var(--rule-strong); background: var(--surface); color: var(--ink-2); }
+  #view-dataroom .stock-pill:hover { border-color: var(--accent-soft); color: var(--ink); }
+  #view-dataroom .stock-pill.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  #view-dataroom .stock-pill .mk { font-size: 0.62rem; opacity: 0.75; font-weight: 400; }
+  #view-dataroom .control-row .searchbar { margin: 0 0 0 auto; flex: 0 1 330px; min-width: 220px; }
+  @media (max-width: 560px){ #view-dataroom .control-row .searchbar { margin: 0; flex-basis: 100%; } }
+
+  #view-dataroom .tree { display: flex; flex-direction: column; }
+  #view-dataroom .hub { align-self: center; width: min(640px, 100%); background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r-lg); box-shadow: var(--shadow); padding: 1.15rem 1.35rem; }
+  #view-dataroom .hub .hub-top { display: flex; align-items: center; gap: 0.95rem; flex-wrap: wrap; }
+  #view-dataroom .hub .tk { font-family: var(--font-mono); font-size: 1.55rem; font-weight: 700; letter-spacing: 0.01em; line-height: 1; color: var(--ink); }
+  #view-dataroom .hub .nmwrap .nm { font-family: var(--font-serif); font-size: 1.12rem; font-weight: 600; line-height: 1.1; }
+  #view-dataroom .hub .nmwrap .mk { font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-muted); margin-top: 0.2rem; }
+  #view-dataroom .hub .status { margin-left: auto; }
+  #view-dataroom .hub .thesis { font-family: var(--font-serif); font-size: 0.92rem; color: var(--ink-2); line-height: 1.5; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--rule); }
+  #view-dataroom .hub .thesis b { color: var(--ink); }
+  #view-dataroom .mix { margin-top: 0.85rem; }
+  #view-dataroom .mix .mix-bar { display: flex; height: 0.55rem; border-radius: 20px; overflow: hidden; background: var(--sunken); }
+  #view-dataroom .mix .mix-seg { height: 100%; }
+  #view-dataroom .mix .mix-seg.public { background: var(--accent); }
+  #view-dataroom .mix .mix-seg.broker { background: var(--brass); }
+  #view-dataroom .mix .mix-seg.internal { background: var(--intact); }
+  #view-dataroom .mix .mix-legend { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-top: 0.55rem; font-family: var(--font-mono); font-size: 0.68rem; color: var(--ink-2); }
+  #view-dataroom .mix .mix-legend .li { display: inline-flex; align-items: center; gap: 0.35rem; }
+  #view-dataroom .mix .mix-legend .total { margin-left: auto; color: var(--ink-muted); }
+
+  #view-dataroom .trunk { width: 2px; height: 22px; background: var(--rule-strong); align-self: center; }
+  #view-dataroom .rail-wrap { position: relative; height: 22px; }
+  #view-dataroom .rail-wrap .rail { position: absolute; top: 0; left: 16.66%; right: 16.66%; height: 2px; background: var(--rule-strong); }
+  #view-dataroom .rail-wrap .stub { position: absolute; top: 0; width: 2px; height: 22px; background: var(--rule-strong); transform: translateX(-50%); }
+  @media (max-width: 900px){ #view-dataroom .trunk, #view-dataroom .rail-wrap { display: none; } }
+
+  #view-dataroom .lanes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; align-items: start; }
+  @media (max-width: 900px){ #view-dataroom .lanes { grid-template-columns: 1fr; } }
+  #view-dataroom .lane { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r-lg); box-shadow: var(--shadow); overflow: hidden; }
+  #view-dataroom .lane .lane-head { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1rem; border-bottom: 1px solid var(--rule); border-top: 3px solid var(--rule); }
+  #view-dataroom .lane.public .lane-head { border-top-color: var(--accent); }
+  #view-dataroom .lane.broker .lane-head { border-top-color: var(--brass); }
+  #view-dataroom .lane.internal .lane-head { border-top-color: var(--intact); }
+  #view-dataroom .lane .lane-head .nm { font-family: var(--font-serif); font-weight: 600; font-size: 1rem; }
+  #view-dataroom .lane .lane-head .ct { margin-left: auto; font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-2); background: var(--sunken); border-radius: 20px; padding: 0.1rem 0.5rem; }
+
+  #view-dataroom .doc-card { display: grid; grid-template-columns: auto 1fr; gap: 0.15rem 0.7rem; width: 100%; text-align: left; padding: 0.8rem 1rem; border: none; border-top: 1px solid var(--rule); background: none; transition: background .12s; cursor: pointer; }
+  #view-dataroom .doc-card:first-child { border-top: none; }
+  #view-dataroom .doc-card:hover { background: color-mix(in srgb, var(--accent) 4%, var(--surface)); }
+  #view-dataroom .doc-card .ext { grid-row: 1 / span 3; align-self: start; width: 2.1rem; height: 2.1rem; display: grid; place-items: center; border-radius: var(--r-sm); font-family: var(--font-mono); font-size: 0.56rem; font-weight: 700; letter-spacing: 0.03em; }
+  #view-dataroom .doc-card .ext.public { background: var(--accent-tint); color: var(--accent); }
+  #view-dataroom .doc-card .ext.broker { background: var(--brass-tint); color: var(--brass-ink); }
+  #view-dataroom .doc-card .ext.internal { background: var(--intact-tint); color: var(--intact-ink); }
+  #view-dataroom .doc-card .fn { font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink); word-break: break-word; line-height: 1.3; }
+  #view-dataroom .doc-card .dd { font-size: 0.78rem; color: var(--ink-2); line-height: 1.35; }
+  #view-dataroom .doc-card .dm { display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap; font-family: var(--font-mono); font-size: 0.63rem; color: var(--ink-muted); margin-top: 0.15rem; }
+  #view-dataroom .doc-card .cited { display: inline-flex; align-items: center; gap: 0.28rem; font-family: var(--font-mono); font-size: 0.6rem; color: var(--accent); background: var(--accent-tint); border-radius: 20px; padding: 0.05rem 0.4rem; }
+  #view-dataroom .doc-card .arrow { grid-column: 2; justify-self: end; align-self: center; color: var(--ink-muted); font-size: 0.9rem; opacity: 0; transition: opacity .12s, transform .12s; grid-row: 1 / span 3; }
+  #view-dataroom .doc-card:hover .arrow { opacity: 1; transform: translateX(2px); }
+
+  /* Data Room · document detail modal */
+  #dr-scrim { position: fixed; inset: 0; background: rgba(28,29,25,0.44); backdrop-filter: blur(2px); display: none; align-items: flex-start; justify-content: center; padding: clamp(1rem,4vh,3rem) 1.1rem; z-index: 60; overflow-y: auto; }
+  #dr-scrim.on { display: flex; }
+  #dr-scrim .modal { background: var(--surface); border: 1px solid var(--rule-strong); border-radius: var(--r-lg); box-shadow: var(--shadow-lift); width: min(780px, 100%); overflow: hidden; }
+  @media (prefers-reduced-motion: no-preference){ #dr-scrim.on .modal { animation: drpop .2s cubic-bezier(.2,.7,.3,1) both; } }
+  @keyframes drpop { from { opacity: 0; transform: translateY(10px) scale(0.99);} to { opacity: 1; transform: none;} }
+  #dr-scrim .m-head { display: flex; align-items: flex-start; gap: 0.7rem; padding: 1rem 1.15rem 0.85rem; border-bottom: 1px solid var(--rule); }
+  #dr-scrim .m-ic { width: 2.4rem; height: 2.4rem; border-radius: var(--r-md); display: grid; place-items: center; font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700; flex: 0 0 auto; }
+  #dr-scrim .m-ic.public { background: var(--accent-tint); color: var(--accent); }
+  #dr-scrim .m-ic.broker { background: var(--brass-tint); color: var(--brass-ink); }
+  #dr-scrim .m-ic.internal { background: var(--intact-tint); color: var(--intact-ink); }
+  #dr-scrim .m-ti { flex: 1; min-width: 0; }
+  #dr-scrim .m-ti .fn { font-family: var(--font-mono); font-size: 0.9rem; font-weight: 600; color: var(--ink); word-break: break-word; }
+  #dr-scrim .m-ti .row { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.35rem; flex-wrap: wrap; }
+  #dr-scrim .m-ti .dd { font-size: 0.8rem; color: var(--ink-2); }
+  #dr-scrim .x { background: none; border: none; font-size: 1.05rem; color: var(--ink-muted); padding: 0.25rem 0.45rem; border-radius: var(--r-sm); flex: 0 0 auto; cursor: pointer; }
+  #dr-scrim .x:hover { background: var(--sunken); color: var(--ink); }
+  #dr-scrim .m-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.1rem 1rem; padding: 0.85rem 1.15rem; background: var(--sunken); border-bottom: 1px solid var(--rule); margin: 0; }
+  @media (max-width: 560px){ #dr-scrim .m-meta { grid-template-columns: repeat(2, 1fr); } }
+  #dr-scrim .m-meta .cell { padding: 0.3rem 0; }
+  #dr-scrim .m-meta dt { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-muted); margin: 0 0 0.15rem; }
+  #dr-scrim .m-meta dd { margin: 0; font-family: var(--font-mono); font-size: 0.76rem; color: var(--ink); }
+  #dr-scrim .m-doclabel { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); padding: 0.7rem 1.15rem 0.3rem; }
+  #dr-scrim .m-body { padding: 0 0 0.5rem; max-height: 46vh; overflow-y: auto; }
+  #dr-scrim .mblock { display: grid; grid-template-columns: 58px 1fr; gap: 0.9rem; padding: 0.65rem 1.15rem; border-top: 1px solid var(--rule); }
+  #dr-scrim .mblock:first-of-type { border-top: none; }
+  #dr-scrim .mblock .mpg { font-family: var(--font-mono); font-size: 0.66rem; color: var(--ink-muted); padding-top: 0.2rem; white-space: nowrap; }
+  #dr-scrim .mblock .mtext { font-family: var(--font-serif); font-size: 0.95rem; line-height: 1.6; color: var(--ink); }
+  #dr-scrim .mblock.hl { background: color-mix(in srgb, var(--risk) 9%, var(--surface)); }
+  #dr-scrim .mblock.hl .mtext { background: color-mix(in srgb, var(--risk) 15%, var(--surface)); border-left: 2px solid var(--risk); border-radius: 2px; padding: 0.5rem 0.65rem; margin: -0.15rem 0; }
+  #dr-scrim .mblock.hl.broker-hl { background: color-mix(in srgb, var(--brass) 8%, var(--surface)); }
+  #dr-scrim .mblock.hl.broker-hl .mtext { background: color-mix(in srgb, var(--brass) 14%, var(--surface)); border-left-color: var(--brass); }
+  #dr-scrim .cited-tag { display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 0.55rem; font-family: var(--font-mono); font-size: 0.64rem; color: var(--accent); }
+  #dr-scrim .cited-tag .lk { color: var(--accent); border-bottom: 1px dashed var(--accent-soft); }
+  #dr-scrim .m-foot { display: flex; align-items: center; gap: 0.6rem; padding: 0.75rem 1.15rem; border-top: 1px solid var(--rule); background: var(--sunken); flex-wrap: wrap; }
+  #dr-scrim .m-foot .prov { font-family: var(--font-mono); font-size: 0.66rem; color: var(--ink-muted); }
+  #dr-scrim .m-foot .grounded-mini { margin-left: auto; display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--font-mono); font-size: 0.64rem; color: var(--intact-ink); }
+
   .foot { text-align: center; font-size: 0.74rem; color: var(--ink-muted); font-family: var(--font-mono); padding: 1.5rem 1rem 0; border-top: 1px solid var(--rule); margin: 2rem clamp(0.9rem,3vw,1.6rem) 0; }
 </style>
 
@@ -433,6 +553,7 @@
     <div class="brand"><span class="mark"></span><span class="wm">Thesis Ledger</span></div>
     <nav class="nav">
       <button data-nav="board" class="active"><span class="lbl">Portfolio Board</span></button>
+      <button data-nav="dataroom"><span class="lbl">Data Room</span></button>
       <button data-nav="queue">
         <span class="lbl">Verification Queue</span><span class="badge">1</span>
       </button>
@@ -1020,9 +1141,61 @@
       <div class="callout"><b>หัวใจ Human veto:</b> ระบบไม่ฟันธง 🟡 เอง — วางเหตุผลทั้งสองฝ่ายให้คนเห็นแล้วคนกดปุ่ม · ปุ่มใช้ภาษากลาง <b>ไม่มี ซื้อ/ขาย/แนะนำ</b></div>
     </section>
 
+    <!-- ============ VIEW · DATA ROOM ============ -->
+    <section class="view" id="view-dataroom">
+      <div class="view-head">
+        <div class="eyebrow">Per-stock evidence · public · broker · team notes</div>
+        <h1>Data Room</h1>
+        <div class="sub">Everything the team knows about a single holding, in one place. All data related to the stock — public filings, broker research, and team notes — is aggregated and processed on-premises by a <b>local LLM</b>, then organised by source so you can see exactly what backs the thesis and where each piece came from.</div>
+      </div>
+
+      <div class="control-row">
+        <div class="stock-switch">
+          <span class="lbl">Coverage</span>
+          <button class="stock-pill active" data-stock="mwg">MWG <span class="mk">VN</span></button>
+          <button class="stock-pill" data-stock="cpall">CPALL <span class="mk">TH</span></button>
+        </div>
+        <div class="searchbar">
+          <span class="ic">⌕</span>
+          <input id="dr-search" type="text" placeholder="Search this stock's data — filename, source, metric…" aria-label="Search documents">
+          <span class="hintk">⌘K</span>
+        </div>
+      </div>
+
+      <div class="tree">
+        <div class="hub" id="dr-hub"><!-- stock hub injected by JS --></div>
+        <div class="trunk"></div>
+        <div class="rail-wrap"><div class="rail"></div><span class="stub" style="left:16.66%"></span><span class="stub" style="left:50%"></span><span class="stub" style="left:83.34%"></span></div>
+        <div class="lanes" id="dr-lanes"><!-- source lanes injected by JS --></div>
+      </div>
+
+      <div class="callout"><b>ทำไมหน้านี้สำคัญกับกรรมการ:</b> ตอบโจทย์ <b>Verify</b> (ทุกประโยคในระบบสาวถึงเอกสาร·หน้า·บรรทัดต้นทางได้จริง) และ <b>Combine</b> (public + broker + team notes อยู่ในคลังเดียว เปิดเทียบได้) — ความน่าเชื่อถือของ AI มาจาก "ชี้ต้นทางได้" ไม่ใช่ "พูดให้ฟังดูดี"</div>
+    </section>
+
   </div>
 
-  <div class="foot">Thesis Ledger · 4 screens · committed light theme · Editorial-Institutional · demo fonts = system stack (โปรดสลับเป็นฟอนต์ลิขสิทธิ์ตอน build ด้วย next/font)</div>
+  <div class="foot">Thesis Ledger · 5 screens · committed light theme · Editorial-Institutional · demo fonts = system stack (โปรดสลับเป็นฟอนต์ลิขสิทธิ์ตอน build ด้วย next/font)</div>
+</div>
+
+<!-- ============ DATA ROOM · document detail modal ============ -->
+<div id="dr-scrim">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="dr-fn">
+    <div class="m-head">
+      <span class="m-ic" id="dr-ic"></span>
+      <div class="m-ti">
+        <div class="fn" id="dr-fn"></div>
+        <div class="row"><span class="tier" id="dr-tier"></span><span class="dd" id="dr-dd"></span></div>
+      </div>
+      <button class="x" id="dr-x" aria-label="ปิด">✕</button>
+    </div>
+    <dl class="m-meta" id="dr-meta"></dl>
+    <div class="m-doclabel">เนื้อหาเอกสาร · highlight = บรรทัดที่ถูกอ้างอิงใน thesis</div>
+    <div class="m-body" id="dr-body"></div>
+    <div class="m-foot">
+      <span class="prov" id="dr-prov"></span>
+      <span class="grounded-mini">✓ grounded · knowledge_date คงเดิม ไม่มี lookahead</span>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -1288,7 +1461,7 @@
     }
 
     /* ---- view navigation ---- */
-    var views = { board:"view-board", card:"view-card", trace:"view-trace", queue:"view-queue" };
+    var views = { board:"view-board", card:"view-card", trace:"view-trace", queue:"view-queue", dataroom:"view-dataroom" };
     var navBtns = document.querySelectorAll(".nav button");
     function show(name) {
       Object.keys(views).forEach(function (k) {
@@ -1343,5 +1516,217 @@
         apply(r.getAttribute("data-target"));
       });
     });
+  })();
+</script>
+
+<script>
+  (function () {
+    /* ===== DATA ROOM — per-stock evidence (self-contained; ids prefixed dr-) ===== */
+    var TAB_LABEL = { public:"Public Data", broker:"Broker Data", internal:"Team Notes" };
+    var SOURCE_TYPE = { public:"ข้อมูลสาธารณะ (public)", broker:"บทวิเคราะห์โบรกเกอร์ (broker)", internal:"เอกสารภายในทีม (team notes)" };
+
+    var DOCS = {
+      "mwg-q4-results": { tier:"public", ext:"PDF", name:"MWG_Q4-2023_results.pdf",
+        desc:"งบและผลประกอบการไตรมาส 4/2023", rel:"งบ Q4 — ยืนยัน margin 19.68% + ICT/CE −21%", added:"2024-01-15", kd:"Q4 · 2023", extent:"12 หน้า", prov:"HOSE filing · MWG Investor Relations",
+        blocks:[
+          { pg:"p.1", text:"Mobile World Investment Corporation — Q4 & FY2023 Business Results (Unaudited)." },
+          { pg:"p.3", text:"Revenue from the ICT/CE chains (Thegioididong + Dien May Xanh) declined 21% YoY over Jan–Oct 2023 amid an aggressive price war.", cite:{ n:5, label:"Thesis · MWG" } },
+          { pg:"p.6", text:"Consolidated gross margin came in at 19.68% in Q4 2023, down 132 bps as the price war and mix shift compressed profitability.", cite:{ n:4, label:"Thesis · MWG" } },
+          { pg:"p.9", text:"Bach Hoa Xanh (grocery) reached store-level break-even in selected regions, partly offsetting ICT weakness." }
+        ] },
+      "mwg-financials": { tier:"public", ext:"XLSX", name:"MWG_financials_extracted.xlsx",
+        desc:"งบการเงินย้อนหลัง 12 ไตรมาส (extracted)", rel:"งบย้อนหลัง 12 ไตรมาส", added:"2024-01-16", kd:"Q4 · 2023", extent:"5 sheets", prov:"Extracted from HOSE filings",
+        blocks:[
+          { pg:"Revenue·C14", text:"ICT/CE quarterly revenue series (VNDbn) — trailing column shows −21% YoY." },
+          { pg:"Margin·D9", text:"Consolidated gross-margin series by quarter — latest cell reads 19.68%." },
+          { pg:"Assump·B3", text:"Note: figures auto-extracted; each cell links back to the source filing page." }
+        ] },
+      "cpall-q3": { tier:"public", ext:"PDF", name:"CPALL_Q3-2023_56-1.pdf",
+        desc:"แบบแสดงรายการข้อมูล 56-1 ไตรมาส 3/2023", rel:"แบบ 56-1 Q3 — SSSG + store count", added:"2023-11-20", kd:"Q3 · 2023", extent:"64 หน้า", prov:"SET filing · CP ALL PCL",
+        blocks:[ { pg:"p.1", text:"CP ALL PCL — แบบแสดงรายการข้อมูลประจำไตรมาส 3/2023 (56-1)" }, { pg:"p.11", text:"7-Eleven store count และ same-store sales performance ประจำไตรมาส" } ] },
+      "cpall-price": { tier:"public", ext:"CSV", name:"CPALL_price_history_2023.csv",
+        desc:"ราคาปิดรายวัน CPALL ตลอดปี 2023", rel:"ราคาตลาดรายวัน", added:"2024-01-02", kd:"2023-12-29", extent:"245 rows", prov:"Exchange price feed (public)",
+        blocks:[ { pg:"header", text:"date,open,high,low,close,volume" }, { pg:"row 245", text:"2023-12-29, 58.75, 59.25, 58.50, 59.00, 8420000  →  close 59.00 THB" } ] },
+      "mwg-price": { tier:"public", ext:"CSV", name:"MWG_price_history_2023.csv",
+        desc:"ราคาปิดรายวัน MWG ตลอดปี 2023", rel:"ราคาตลาดรายวัน", added:"2024-01-02", kd:"2023-12-29", extent:"251 rows", prov:"Exchange price feed (public)",
+        blocks:[ { pg:"header", text:"date,open,high,low,close,volume" }, { pg:"row 251", text:"2023-12-29, 42150, 42600, 41800, 42000, 1284500  →  close 42,000 VND" } ] },
+      "vn-macro-link": { tier:"public", ext:"LINK", name:"VnEconomy — Vietnam ICT price war", url:"https://vneconomy.vn/vietnam-electronics-price-war-2023",
+        desc:"ข่าว: สงครามราคาสินค้าอิเล็กทรอนิกส์เวียดนาม", rel:"บริบทอุตสาหกรรม (ข่าว)", added:"2023-11-05", kd:"2023-11", extent:"web article", prov:"VnEconomy (news)",
+        blocks:[ { pg:"¶ 2", text:"Retailers slashed smartphone and laptop prices through H2 2023 to defend market share, squeezing sector-wide margins." } ] },
+
+      "mwg-broker-update": { tier:"broker", ext:"PDF", name:"MWG_Q1-2024_broker_update.pdf",
+        desc:"บทวิเคราะห์หลังงบ Q4 · ปรับประมาณการ", rel:"โบรกปรับลด margin guidance FY24 → 18%", added:"2024-01-29", kd:"2024-01-29", extent:"6 หน้า", prov:"Broker research (sell-side)",
+        blocks:[
+          { pg:"p.1", text:"MWG — Post Q4 print: trimming near-term estimates, retaining structural bull case." },
+          { pg:"p.2", text:"We cut our FY24 consolidated gross-margin forecast to ~18.0% on sustained price competition across the ICT segment.", cite:{ n:6, label:"Thesis · MWG" } },
+          { pg:"p.4", text:"We keep our BUY rating but lower the target price on softer margin assumptions." }
+        ] },
+      "mwg-ubs": { tier:"broker", ext:"PDF", name:"MWG_broker_note_UBS.pdf",
+        desc:"บทวิเคราะห์เชิงลึก · market position", rel:"จุดยืนตลาด — ผู้นำ ICT retail", added:"2023-10-12", kd:"2023-10", extent:"22 หน้า", prov:"Broker research (sell-side)",
+        blocks:[
+          { pg:"p.1", text:"MWG remains the ICT retail market leader in Vietnam, operating the country's largest consumer-electronics store network.", cite:{ n:1, label:"Thesis · MWG" } },
+          { pg:"p.5", text:"Long-term optionality lies in Bach Hoa Xanh scaling toward national grocery leadership." }
+        ] },
+      "mwg-hsc-model": { tier:"broker", ext:"XLSX", name:"MWG_estimates_HSC.xlsx",
+        desc:"ประมาณการ FY24–26 · โมเดลโบรกเกอร์", rel:"ประมาณการ FY24–26", added:"2023-12-04", kd:"2023-12", extent:"3 sheets", prov:"Broker research (sell-side)",
+        blocks:[
+          { pg:"FY24·E22", text:"FY24E gross-margin assumption entered at 18.5%, revised down from 19.8%." },
+          { pg:"Valuation·H10", text:"DCF target price recalculated on the lower margin path." }
+        ] },
+      "cpall-maybank-deck": { tier:"broker", ext:"PPTX", name:"CPALL_channel_Maybank.pptx",
+        desc:"เด็ค channel update · SSSG", rel:"โบรก — SSSG ชะลอ ~2%", added:"2024-01-22", kd:"2024-01-22", extent:"16 slides", prov:"Broker research (sell-side)",
+        blocks:[ { pg:"slide 6", text:"Same-store sales growth chart shows deceleration to ~2% in 4Q23 as the tourism tailwind normalizes." } ] },
+
+      "mwg-thesis-note": { tier:"internal", ext:"MD", name:"MWG_thesis_note_v2.md",
+        desc:"โน้ต thesis หลัก · สมมติฐานที่วัดผลได้", rel:"thesis หลัก — สมมติฐานที่วัดผลได้", added:"2023-09-18", kd:"2023-09", extent:"1 ไฟล์", prov:"Internal · เขียนโดย ปวริศ (PM)",
+        blocks:[
+          { pg:"ln 1", text:"# MWG — Investment Thesis (v2)" },
+          { pg:"ln 8", text:"ธุรกิจหลัก TGDD + DMX ต้องเติบโต ≥ 0% YoY — ตราบใดที่ยังไม่หด thesis ยังยืน", cite:{ n:2, label:"Thesis · MWG" } },
+          { pg:"ln 12", text:"Gross margin จะยืน ≥ 19.0% แม้ต้องเจอการแข่งราคา — เป็นเสาหลักของ thesis (load-bearing)", cite:{ n:3, label:"Thesis · MWG" } },
+          { pg:"ln 18", text:"Bach Hoa Xanh = optionality ระยะยาว ไม่นับเป็น load-bearing ของรอบนี้" }
+        ] },
+      "mwg-field": { tier:"internal", ext:"MD", name:"MWG_field_visit_HCMC.md",
+        desc:"บันทึกลงพื้นที่ · โฮจิมินห์ซิตี้", rel:"field visit HCMC", added:"2023-10-08", kd:"2023-10", extent:"1 ไฟล์", prov:"Internal · field note",
+        blocks:[ { pg:"ln 3", text:"ลงพื้นที่ HCMC: ทราฟฟิกร้านยังสูง แต่ผู้จัดการยอมรับว่าต้องอัดโปรลดราคาแรงเพื่อรักษายอด" } ] },
+      "cpall-thesis": { tier:"internal", ext:"MD", name:"CPALL_thesis_note.md",
+        desc:"โน้ต thesis · สมมติฐาน SSSG", rel:"thesis — สมมติฐาน SSSG ≥ 5%", added:"2023-08-11", kd:"2023-08", extent:"1 ไฟล์", prov:"Internal · เขียนโดย ปวริศ (PM)",
+        blocks:[ { pg:"ln 5", text:"SSSG ≥ 5% ภายใน 2 ไตรมาส จาก store expansion + traffic ฟื้น" } ] },
+      "cpall-channel": { tier:"internal", ext:"MD", name:"CPALL_channel_check.md",
+        desc:"channel check · ร้านสาขา กทม.", rel:"channel check สาขา กทม.", added:"2023-12-20", kd:"2023-12", extent:"1 ไฟล์", prov:"Internal · channel check",
+        blocks:[ { pg:"ln 2", text:"เช็คสาขา กทม.: ทราฟฟิกนักท่องเที่ยวเริ่มแผ่ว ยอดต่อบิลทรงตัว" } ] },
+      "alpha-position": { tier:"internal", ext:"XLSX", name:"Alpha_Fund_MWG_position.xlsx",
+        desc:"position sizing · risk limit ของพอร์ต", rel:"position 3.8% NAV + risk limit", added:"2024-01-05", kd:"2024-01", extent:"2 sheets", prov:"Internal · portfolio book",
+        blocks:[ { pg:"Sizing·B8", text:"MWG position: 3.8% of NAV; review trigger tied to a thesis-break, not to a price stop." } ] },
+      "ic-memo": { tier:"internal", ext:"DOCX", name:"IC_memo_MWG_2024-01.docx",
+        desc:"บันทึกการประชุม Investment Committee", rel:"มติ IC — watch (margin คือความเสี่ยงหลัก)", added:"2024-01-30", kd:"2024-01", extent:"6 หน้า", prov:"Internal · IC minutes",
+        blocks:[ { pg:"p.2", text:"IC keeps MWG on watch: the margin assumption is the load-bearing risk — revisit if gross-margin guidance falls below 19%." } ] }
+    };
+
+    var STOCKS = {
+      mwg: { ticker:"MWG", name:"Mobile World Group", market:"Vietnam · Retail",
+        thesis:"ธุรกิจหลัก TGDD + DMX โต ≥ 0% YoY · gross margin ≥ 19% (load-bearing)",
+        status:"risk", statusGlyph:"◆", statusLabel:"RISK · margin ถูกท้าทาย",
+        public:["mwg-q4-results","mwg-financials","mwg-price","vn-macro-link"],
+        broker:["mwg-broker-update","mwg-ubs","mwg-hsc-model"],
+        internal:["mwg-thesis-note","mwg-field","alpha-position","ic-memo"] },
+      cpall: { ticker:"CPALL", name:"CP All", market:"Thailand · Retail",
+        thesis:"SSSG ≥ 5% ภายใน 2 ไตรมาส จาก store expansion + traffic ฟื้น",
+        status:"stale", statusGlyph:"○", statusLabel:"STALE · รอข้อมูลใหม่",
+        public:["cpall-q3","cpall-price"],
+        broker:["cpall-maybank-deck"],
+        internal:["cpall-thesis","cpall-channel"] }
+    };
+
+    function citedCount(doc){ var c = 0; doc.blocks.forEach(function (b){ if (b.cite) c++; }); return c; }
+
+    function laneHTML(tier, ids){
+      var cards = ids.map(function (id){
+        var d = DOCS[id]; var cc = citedCount(d);
+        return '<button class="doc-card" data-doc="' + id + '">' +
+          '<span class="ext ' + d.tier + '">' + d.ext + '</span>' +
+          '<span class="fn">' + d.name + '</span>' +
+          '<span class="dd">' + (d.rel || d.desc) + '</span>' +
+          '<span class="dm"><span>' + d.kd + '</span><span>·</span><span>' + d.extent + '</span>' +
+            (cc ? '<span class="cited">↳ อ้างอิง ' + cc + '</span>' : '') + '</span>' +
+          '<span class="arrow">→</span>' +
+        '</button>';
+      }).join("");
+      return '<section class="lane ' + tier + '">' +
+        '<div class="lane-head"><span class="tdot ' + tier + '"></span><span class="nm">' + TAB_LABEL[tier] + '</span><span class="ct">' + ids.length + '</span></div>' +
+        '<div class="col-body">' + cards + '<div class="col-empty">No matching documents</div></div>' +
+      '</section>';
+    }
+
+    function renderStock(id){
+      var s = STOCKS[id];
+      var np = s.public.length, nb = s.broker.length, ni = s.internal.length, tot = np + nb + ni;
+      function pct(n){ return tot ? (n / tot * 100).toFixed(1) + '%' : '0%'; }
+      document.getElementById("dr-hub").innerHTML =
+        '<div class="hub-top">' +
+          '<div class="tk">' + s.ticker + '</div>' +
+          '<div class="nmwrap"><div class="nm">' + s.name + '</div><div class="mk">' + s.market + '</div></div>' +
+          '<span class="status"><span class="pill ' + s.status + '"><span class="glyph">' + s.statusGlyph + '</span> ' + s.statusLabel + '</span></span>' +
+        '</div>' +
+        '<div class="thesis"><b>Thesis:</b> ' + s.thesis + '</div>' +
+        '<div class="mix"><div class="mix-bar">' +
+            '<span class="mix-seg public" style="width:' + pct(np) + '"></span>' +
+            '<span class="mix-seg broker" style="width:' + pct(nb) + '"></span>' +
+            '<span class="mix-seg internal" style="width:' + pct(ni) + '"></span>' +
+          '</div><div class="mix-legend">' +
+            '<span class="li"><span class="tdot public"></span>Public ' + np + '</span>' +
+            '<span class="li"><span class="tdot broker"></span>Broker ' + nb + '</span>' +
+            '<span class="li"><span class="tdot internal"></span>Team Notes ' + ni + '</span>' +
+            '<span class="total">' + tot + ' related documents</span>' +
+          '</div></div>';
+      document.getElementById("dr-lanes").innerHTML =
+        laneHTML("public", s.public) + laneHTML("broker", s.broker) + laneHTML("internal", s.internal);
+      var se = document.getElementById("dr-search"); if (se) se.value = "";
+    }
+
+    var scrim = document.getElementById("dr-scrim");
+
+    function openDoc(id){
+      var d = DOCS[id]; if (!d) return;
+      document.getElementById("dr-ic").className = "m-ic " + d.tier;
+      document.getElementById("dr-ic").textContent = d.ext;
+      document.getElementById("dr-fn").textContent = d.name;
+      var tierEl = document.getElementById("dr-tier");
+      tierEl.className = "tier " + d.tier; tierEl.textContent = TAB_LABEL[d.tier];
+      document.getElementById("dr-dd").textContent = d.desc;
+      var cc = citedCount(d);
+      document.getElementById("dr-meta").innerHTML = [
+        ["แหล่ง", SOURCE_TYPE[d.tier]],
+        ["knowledge_date", d.kd],
+        ["เพิ่มเข้าคลัง", d.added],
+        ["ขนาด", d.extent],
+        ["ที่มา", d.prov],
+        ["อ้างอิงโดย", cc ? cc + " ข้อความใน thesis" : "—"]
+      ].map(function (kv){ return '<div class="cell"><dt>' + kv[0] + '</dt><dd>' + kv[1] + '</dd></div>'; }).join("");
+      document.getElementById("dr-body").innerHTML = d.blocks.map(function (b){
+        var hl = b.cite ? " hl" + (d.tier === "broker" ? " broker-hl" : "") : "";
+        var tag = b.cite ? '<div class="cited-tag">↳ อ้างอิงโดย <span class="lk">' + b.cite.label + ' · [' + b.cite.n + ']</span> · grounded ถึง ' + b.pg + '</div>' : '';
+        return '<div class="mblock' + hl + '"><span class="mpg">' + b.pg + '</span><div class="mtext">' + b.text + tag + '</div></div>';
+      }).join("");
+      document.getElementById("dr-prov").innerHTML = "ที่มา: " + d.prov +
+        (d.url ? ' · <a href="' + d.url + '" target="_blank" rel="noopener" style="color:var(--accent);border-bottom:1px dashed var(--accent-soft);">↗ open source</a>' : '');
+      scrim.classList.add("on"); document.body.style.overflow = "hidden";
+    }
+    function closeDoc(){ scrim.classList.remove("on"); document.body.style.overflow = ""; }
+
+    document.addEventListener("click", function (e){
+      var sp = e.target.closest("#view-dataroom .stock-pill");
+      if (sp){
+        document.querySelectorAll("#view-dataroom .stock-pill").forEach(function (p){ p.classList.toggle("active", p === sp); });
+        renderStock(sp.getAttribute("data-stock"));
+        return;
+      }
+      var card = e.target.closest("#view-dataroom .doc-card");
+      if (card){ openDoc(card.getAttribute("data-doc")); return; }
+      if (e.target === scrim || e.target.closest("#dr-x")){ closeDoc(); }
+    });
+    document.addEventListener("keydown", function (e){
+      if (e.key === "Escape") closeDoc();
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k"){
+        var dv = document.getElementById("view-dataroom");
+        if (dv && dv.classList.contains("on")){ e.preventDefault(); document.getElementById("dr-search").focus(); }
+      }
+    });
+    document.getElementById("dr-search").addEventListener("input", function (){
+      var q = this.value.trim().toLowerCase();
+      document.querySelectorAll("#view-dataroom .lane").forEach(function (col){
+        var visible = 0;
+        col.querySelectorAll(".doc-card").forEach(function (card){
+          var d = DOCS[card.getAttribute("data-doc")];
+          var hay = (d.name + " " + d.desc + " " + (d.rel || "") + " " + d.tier + " " + d.prov).toLowerCase();
+          var show = !q || hay.indexOf(q) !== -1;
+          card.style.display = show ? "" : "none";
+          if (show) visible++;
+        });
+        var empty = col.querySelector(".col-empty");
+        if (empty) empty.style.display = visible ? "none" : "block";
+      });
+    });
+
+    renderStock("mwg");
   })();
 </script>
