@@ -44,6 +44,8 @@
 
 **Staleness decay:** claim อิงงบไตรมาส → STALE หลัง **~100 วัน**, claim อิงข่าว/เหตุการณ์ → STALE หลัง **~30 วัน**
 
+> ⚠️ **Terminology drift (ไม่ใช่การเปลี่ยนกฎ):** ตารางด้านบนคือ logic ที่ล็อกแล้วและยังไม่เปลี่ยน แต่ **ชื่อสถานะที่แสดงจริงใน `handoff/04-product-prototype.html` ตอนนี้คือ `INTACT / RISK / REVIEW / STALE`** ไม่ใช่ `BROKEN`/`AT_RISK` — เปลี่ยนชื่อ 2 รอบระหว่างทำ prototype (`BROKEN→AT_RISK→RISK`, `AT_RISK→NEED_REVIEW→REVIEW`), เกณฑ์/threshold/สีเดิมทุกอย่าง ก่อนเขียน schema/backend ให้เลือกชื่อสุดท้ายและแก้ให้ตรงกันทุกไฟล์ ดูรายละเอียดที่ `handoff/BRIEF.md` §6 + §12
+
 **Guardrail เดิมที่ยังคงอยู่:** grounding บังคับ (ไม่มี page/span = ไม่นับ evidence), abstention (`NO_DATA` ไม่เดา), adversarial checker ไม่ตรงกัน → Verification Queue, human veto ทุก decision, `as_of` ≠ `knowledge_date` เสมอ
 
 **Human-in-the-loop ระหว่างเดโม:** pre-baked/scripted ไม่ live

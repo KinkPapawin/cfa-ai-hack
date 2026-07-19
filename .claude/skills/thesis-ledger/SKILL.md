@@ -1,13 +1,13 @@
 ---
 name: thesis-ledger
-description: Project context and locked decisions for "Thesis Ledger" — the CFA × AI hackathon product for the Alpha Fund (InnovestX) case. Use this skill whenever the conversation involves Thesis Ledger, Data Ledger, Data Layer, the Alpha Fund case, the hackathon demo/pitch/slides, claim extraction, traffic-light monitoring (INTACT/AT_RISK/BROKEN/STALE), the Drop & Trace screen, or any dev/frontend/backend work for this project — even if the user doesn't name the product explicitly. Read references/architecture.md before backend/data/pitch work, and references/frontend-spec.md before UI/demo work.
+description: Project context and locked decisions for "Thesis Ledger" — the CFA × AI hackathon product for the Alpha Fund (InnovestX) case. Use this skill whenever the conversation involves Thesis Ledger, Data Ledger, Data Layer, the Alpha Fund case, the hackathon demo/pitch/slides, claim extraction, traffic-light monitoring (INTACT/RISK/REVIEW/STALE — see terminology note below), the Drop & Trace or Thesis Evidence screen, or any dev/frontend/backend work for this project — even if the user doesn't name the product explicitly. Read references/architecture.md before backend/data/pitch work, and references/frontend-spec.md before UI/demo work.
 ---
 
 # Thesis Ledger — Project Skill
 
 ## Product ในหนึ่งย่อหน้า
 
-Thesis Ledger เฝ้าดูว่า **เหตุผลตอนซื้อหุ้นแต่ละตัวยังจริงอยู่ไหม** โดยแปลง research paper เป็น claim ที่พิสูจน์เท็จได้ (metric + operator + threshold + horizon) แล้วเก็บ evidence มาตัดสินสถานะต่อเนื่อง: **INTACT / AT_RISK / BROKEN / STALE** ระบบแนะนำเท่านั้น — ทุก decision ต้องมีคนเซ็น
+Thesis Ledger เฝ้าดูว่า **เหตุผลตอนซื้อหุ้นแต่ละตัวยังจริงอยู่ไหม** โดยแปลง research paper เป็น claim ที่พิสูจน์เท็จได้ (metric + operator + threshold + horizon) แล้วเก็บ evidence มาตัดสินสถานะต่อเนื่อง: **INTACT / RISK / REVIEW / STALE** (ชื่อล่าสุดจาก UI prototype — ดู "หมายเหตุ terminology" ด้านล่าง; logic เดิมยังเหมือนเดิมทุกอย่าง) ระบบแนะนำเท่านั้น — ทุก decision ต้องมีคนเซ็น
 
 ## บริบทลูกค้า (Alpha Fund, InnovestX)
 
@@ -30,7 +30,7 @@ Thesis Ledger เฝ้าดูว่า **เหตุผลตอนซื้
 | **Claim Store ไม่ใช่ Data Lake** — unit of knowledge = structured claim | scale จริง ~3,000 rows; document-level storage ตอบโจทย์ verify ไม่ได้ |
 | **Postgres + pgvector ไม่ใช่ Databricks** | ผิด scale, ผิด bottleneck, licensing ห้าม bulk-store purchased data, ไม่มี data engineering team; วางท่าเป็น "Databricks-compatible" สำหรับคุยระดับ production |
 | Demo **ไม่แตะ licensed data เลย** | เลี่ยง ToS risk ทั้งก้อน |
-| Money shot ของเดโม: **MWG = BROKEN แต่ราคายังไม่ตก** | พิสูจน์ว่าเราเห็นก่อนตลาด |
+| Money shot ของเดโม: **MWG = RISK (เดิมเรียก BROKEN) แต่ราคายังไม่ตก** | พิสูจน์ว่าเราเห็นก่อนตลาด |
 | Positioning: **thesis-health nowcast** ไม่ใช่ price predictor | เลี่ยงเส้น "คำแนะนำการลงทุน" + ตรง precedent BlackRock Aladdin Copilot |
 | Pitch ด้วย **กลไก** ไม่ใช่หัวข้อ | กัน "ก็แค่ AI news alert" — เราเฝ้า *คำสัญญา* ไม่ใช่ *ข่าว* |
 
@@ -52,7 +52,12 @@ Thesis Ledger เฝ้าดูว่า **เหตุผลตอนซื้
 
 - **references/requirements.md** — requirement ฉบับล็อกสุดท้าย (3 วัน/2 คน) แทนที่ scope เดิมด้านล่าง: seed set MWG + CPALL, traffic-light rule ที่เป็นตัวเลขจริง, build plan Day 1–3, open items ที่ยังไม่ปิด (falsifiability test, money-shot verification owner) — **อ่านไฟล์นี้ก่อนเสมอเมื่อทำงาน scope/build-plan**
 - **references/architecture.md** — schema (thesis/claim/verdict/decision + support tables), field ที่กรรมการ CFA จะถาม, risks + mitigations, กฎ regulator ไทย, Liberation Day backtest (⚠️ build plan Phase 0–3 และ seed 6 บริษัทในไฟล์นี้ถูกแทนที่ด้วย requirements.md แล้ว)
-- **references/frontend-spec.md** — 4 หน้าจอ (Portfolio Board, Drop & Trace ⭐, Thesis Card, Verification Queue), traffic engine 2 ชั้น, tech stack, วิธี present ความน่าเชื่อถือ (⚠️ color-logic ตัวเลขจริงและ build order 5 วันในไฟล์นี้ถูกแทนที่ด้วย requirements.md แล้ว)
+- **references/frontend-spec.md** — 4 หน้าจอ (Portfolio Board, Drop & Trace ⭐, Thesis Card, Verification Queue), traffic engine 2 ชั้น, tech stack, วิธี present ความน่าเชื่อถือ (⚠️ color-logic ตัวเลขจริงและ build order 5 วันในไฟล์นี้ถูกแทนที่ด้วย requirements.md แล้ว; ชื่อหน้าจอ "Thesis Card" ถูกเปลี่ยนเป็น "Thesis Evidence" ใน prototype — ดู `handoff/BRIEF.md`)
+- **`handoff/BRIEF.md`** — **อ่านไฟล์นี้เพื่อดูสถานะล่าสุดของ prototype จริง** (`handoff/04-product-prototype.html`) เสมอ ก่อนเชื่อคำอธิบาย UI ในไฟล์อื่น ๆ ในโฟลเดอร์นี้ทั้งหมด รวม SKILL.md นี้ด้วย — ชื่อ status (`RISK`/`REVIEW`) และหน้าจอ (`Thesis Evidence`) เปลี่ยนไปหลายรอบระหว่างทำ prototype, §11–12 ใน BRIEF.md เป็น diff log ที่ละเอียดที่สุด
+
+## หมายเหตุ terminology (สำคัญ — อ่านก่อนคุยเรื่อง status ใด ๆ)
+
+**ชื่อ status ล่าสุดใน prototype คือ `INTACT / RISK / REVIEW / STALE`** — ไม่ใช่ `INTACT / AT_RISK / BROKEN / STALE` ที่ยังปรากฏใน `requirements.md` §3 และ `architecture.md`. ชื่อเปลี่ยนไป 2 รอบระหว่างทำ prototype (`BROKEN→AT_RISK→RISK`, `AT_RISK→NEED_REVIEW→REVIEW`) — **logic, threshold, สี, และความหมายเดิมทุกอย่างไม่เปลี่ยน มีแค่คำที่ใช้เรียกเปลี่ยน**. ยังไม่มีใครไป sync คำนี้กลับเข้า `requirements.md`/`architecture.md` (ซึ่งยังคง "locked" ในแง่ตัวเลข/กฎ) — ก่อนเริ่มเขียน backend/schema ให้เลือกชื่อสุดท้ายและแก้ให้ตรงกันทุกไฟล์ ดูรายละเอียดที่ `handoff/BRIEF.md` §6 + §12.
 
 ## Open questions (จาก SKILL.md เดิม — ได้คำตอบแล้วใน requirements.md §8, ยังไม่ปิดสมบูรณ์)
 
