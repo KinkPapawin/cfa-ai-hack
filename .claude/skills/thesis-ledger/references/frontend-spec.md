@@ -28,7 +28,7 @@ Frontend ไม่ใช่ dashboard สวย ๆ แต่เป็น UI ข
 3. คลิก 🔴 เปิด **Trace view side-by-side**: ซ้าย = หน้า PDF ไฮไลต์ประโยคจริง / ขวา = Claim + เกณฑ์ + evidence เดิม (รวม field note เสียง)
 4. Impact Panel: claim นี้ถูก cite ที่ไหนบ้าง → ใครต้องรู้
 
-## หน้า 3: Thesis Card (ต่อหุ้นหนึ่งตัว)
+## หน้า 3: Thesis Card (ต่อหุ้นหนึ่งตัว) — ⚠️ ใน prototype ล่าสุดเปลี่ยนชื่อเป็น "Thesis Evidence" และ redesign ใหม่ทั้งหน้า (support points แทน claim list เดิม) — ดู `handoff/BRIEF.md` §11–12
 
 สถานะราย claim + evidence ที่ลิงก์ได้ทุกชิ้น + ประวัติ verdict — ใช้เป็นหน้า drill-down จาก Portfolio Board
 

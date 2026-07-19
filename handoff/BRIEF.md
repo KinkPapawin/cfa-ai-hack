@@ -62,7 +62,7 @@ Read them in the numbered order (01 → 04): flow, then architecture, then desig
   - ⚪ STALE/NO_DATA — no fresh evidence within the decay window (≈100 days for quarterly-filing-based claims, ≈30 days for news/event-based claims).
 - **Banned words in any verdict/alert copy**: "buy", "sell", "recommend", "guarantee" (ซื้อ/ขาย/แนะนำ/การันตี) — use neutral phrasing like "thesis is in BROKEN status — REVISIT."
 
-> ⚠️ **Label mismatch, not a spec change.** `04-product-prototype.html` currently *displays* the red state as **AT_RISK** and the amber state as **NEED_REVIEW** instead of the BROKEN/AT_RISK wording above (see §11) — a UI copy decision made during prototype iteration, requested independent of this doc. The underlying rule (thresholds, tolerance bands, decay windows, color meaning) is unchanged. Whoever wires the backend should pick one vocabulary and make the schema, the guardrail doc, and the UI agree before build — don't silently carry both.
+> ⚠️ **Label mismatch, not a spec change — updated twice, read this not §11's history.** `04-product-prototype.html` currently *displays* the red state as **RISK** and the amber state as **REVIEW** (status set: `INTACT / RISK / REVIEW / STALE`) — not the `BROKEN`/`AT_RISK` wording used above and in `requirements.md` §3. It went through two rounds of renaming during prototype iteration (`BROKEN→AT_RISK→RISK`, `AT_RISK→NEED_REVIEW→REVIEW`); treat **RISK/REVIEW as the current name**, full stop — don't resurrect the intermediate `AT_RISK`/`NEED_REVIEW` pairing. The underlying rule (thresholds, tolerance bands, decay windows, color meaning) is unchanged throughout — only the words on screen moved. Whoever wires the backend should pick one vocabulary and make the schema, the guardrail doc (this file + `requirements.md` §3), and the UI agree before build — don't silently carry three different wordings forward. See §12.
 
 ## 7. Two things that are still genuinely unresolved
 
@@ -115,4 +115,31 @@ The design-phase snapshot described in §4 got iterated on afterward, in-browser
 - Added a **Priority & filter toolbar** (filter by load-bearing / needs-review, sort by priority/confidence/conviction) above the reason cards.
 - Added a **"Show more thesis support"** affordance below the 3 cards — expands to a thin "No data available" since there's no 4th reason yet; this is the intended empty-state pattern once real thesis extraction produces a variable number of reasons.
 
-**Terminology rename (applies file-wide, all 4 screens):** the red status label changed **BROKEN → AT_RISK**, and the amber status label changed **AT_RISK → NEED_REVIEW**. Colors and underlying logic are untouched — this was purely a copy/wording change requested during iteration. See the ⚠️ callout in §6 — this is the one change here that actually conflicts with wording used elsewhere in this repo, and needs a deliberate decision (not a silent carry-forward) before backend/schema work starts.
+**Terminology rename (applies file-wide, all 4 screens, round 1):** the red status label changed **BROKEN → AT_RISK**, and the amber status label changed **AT_RISK → NEED_REVIEW**. Colors and underlying logic are untouched — this was purely a copy/wording change requested during iteration. **This was superseded again in the very next round — see §12.** Don't build against `AT_RISK`/`NEED_REVIEW`; see the ⚠️ callout in §6 for the current name.
+
+## 12. Second iteration pass — Thesis Evidence support-point redesign + final terminology
+
+This is a second, later editing session on top of §11 — same file, same "frontend-only, mock data" caveat applies.
+
+**Thesis Evidence — the 3 reason cards were restructured again**, replacing the flat Overview/Why-we-bought/Sell-criteria layout from §11 with **numbered "support points"** (e.g. `1.1`, `1.2` under reason 1; a reason can have one or several). Each support point is now a two-column comparison:
+- **Existing** (`ข้อมูลเดิม`, green) — the original evidence/reasoning, with its own status pill (a support point's status can differ from its parent reason card's).
+- **Upcoming data** (`ข้อมูลที่ขัดแย้งกัน / ข้อมูลใหม่`, red) — new or conflicting evidence that challenges the existing reasoning, or "รอข้อมูลเพิ่ม" (waiting on more data) if there isn't any yet.
+- An **"◆ adversarial disagreement"** tag when the two sides genuinely conflict.
+- Both columns get their own **"◇ Source finder"** — reference links now styled as clickable blue chips (solid `accent-tint` background, rounded, bold) specifically so they read as clickable, not as plain text.
+- A **"+ Add new data"** button per support point (demo-only affordance — flashes a note, no real upload).
+
+**Data reviewer moved from once-per-reason-card to once-per-support-point**, sitting directly under that support point's "+ Add new data" (so every support point — not just the reason as a whole — gets its own review checkpoint). Went through two design passes:
+1. First pass: reviewer header text was `Data reviewer · คนที่มารีวิว`, turning amber with a `⚠ ต้อง review` flag when that support point had an adversarial-disagreement tag.
+2. **Final pass (current state):** simplified to a plain **"Data reviewer"** label, and **all** reviewer headers — regardless of disagreement — use one uniform **soft light-purple background** (`#EAE3F5` bg / `#4C3E78` text, hardcoded — no design-token equivalent exists yet, see note below) that reads as clearly softer than the black "Support point" header bar above it. The per-item amber/flag distinction was dropped entirely; don't reintroduce it without asking — it was a deliberate simplification, not an oversight.
+
+Each reviewer block: reviewer name (pre-filled `ปวริศ (PM)`, with an "auto-filled จากบัญชีที่ login อยู่" note — realistic stand-in for "don't make the user retype who they are," not literally an IP-based lookup), a department field, three status buttons — **Accept Existing / Accept Upcoming / Edit manually** — that stamp an append-only timestamp on click (`decided_by` is always a person, consistent with the guardrail in §6/§9), and a **"+ Add reviewer"** to add more rows. All of this is generated from one JS function per support point (`.sp` element + its `data-sp` id), not hand-duplicated markup — retune the template once, every support point updates.
+
+**Edit button → dropdown**, not a toggle: clicking it now opens a small menu — **"📎 Add file / picture"** or **"✏️ Edit text manually"** — instead of flipping a single editing flag.
+
+**"?" tooltip now has real copy**, not a placeholder — one shared legend (built once in JS, reused on every reason card) defining what each of the four statuses means and routes to (INTACT / RISK / REVIEW / STALE) plus what the ★ rating means (team's conviction *at the time the thesis was set*, not a live number).
+
+**Load-bearing tag removed** from the reason-card header (still tracked as data for the "Load-bearing" filter chip, just not rendered as a visible pill anymore) — judged as something a non-specialist reader wouldn't parse at a glance.
+
+**Terminology rename, round 2 (final, current — supersedes §11's round 1, file-wide, all 4 screens):** the red label changed **AT_RISK → RISK**, and the amber label changed **NEED_REVIEW → REVIEW**. Current status set is **`INTACT / RISK / REVIEW / STALE`**. Same as round 1: colors, thresholds, and underlying logic are untouched, purely a copy change. See the ⚠️ callout in §6 — treat this as the name going forward.
+
+> ⚠️ **Loose end for whoever builds the design-token file next:** the new purple reviewer-header color (`#EAE3F5` / `#4C3E78`) was added directly as a hardcoded hex in `04-product-prototype.html` — `03-design-system.html`'s token set has no purple ramp. If "Data reviewer" stays purple in the real build, add it as a proper token there instead of copying the hex.

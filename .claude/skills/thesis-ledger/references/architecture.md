@@ -11,7 +11,7 @@ Claim หนึ่งรายการ = `metric + operator + threshold + horiz
 **Core tables**
 - `thesis` — เหตุผลตอนซื้อต่อหุ้นหนึ่งตัว
 - `claim` — pillar ย่อยของ thesis (metric, operator, threshold, horizon, `is_load_bearing`)
-- `verdict` — ผลตัดสินต่อ claim: `status` (INTACT / AT_RISK / BROKEN / STALE), `as_of`, `knowledge_date`, confidence
+- `verdict` — ผลตัดสินต่อ claim: `status` (INTACT / AT_RISK / BROKEN / STALE — ⚠️ prototype UI ล่าสุดแสดงเป็น `INTACT / RISK / REVIEW / STALE`, logic เดิม แค่เปลี่ยนชื่อ ดู `handoff/BRIEF.md` §12), `as_of`, `knowledge_date`, confidence
 - `decision` — action ของคน (HOLD / ADD / TRIM / EXIT / REVISIT), `decided_by` ต้องเป็นคนเสมอ, `triggered_by` อ้าง verdict, append-only
 
 **Support tables**
