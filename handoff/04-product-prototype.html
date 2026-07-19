@@ -199,6 +199,9 @@
   .moneyshot .ic { font-size: 1rem; color: var(--broken); }
   .moneyshot .tx { font-size: 0.88rem; color: var(--ink); line-height: 1.5; }
   .moneyshot .tx b { color: var(--broken-ink); }
+  .moneyshot.review { background: var(--risk-tint); border-color: color-mix(in srgb,var(--risk) 30%,transparent); }
+  .moneyshot.review .ic { color: var(--risk); }
+  .moneyshot.review .tx b { color: var(--risk-ink); }
 
   .thesis-statement { font-family: var(--font-serif); font-size: 1.05rem; line-height: 1.55; color: var(--ink-2); border-left: 3px solid var(--accent-soft); padding: 0.3rem 0 0.3rem 1rem; margin-bottom: 1.5rem; }
   .thesis-statement b { color: var(--ink); font-weight: 600; }
@@ -212,6 +215,11 @@
 
   /* ===== THESIS EVIDENCE — reason cards (replaces the old numeric Claims list) ===== */
   .section-bar { background: var(--sunken); border: 1px solid var(--rule); border-radius: var(--r-sm); padding: 0.5rem 1rem; font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-2); text-align: center; margin-bottom: 1.3rem; }
+
+  /* two distinct as_of fields — price snapshot vs. holding-weight doc — never collapsed into one, per BRIEF.md §6 */
+  .asof-lines { display: flex; flex-direction: column; gap: 0.3rem; margin: -0.5rem 0 1.1rem; }
+  .no-ref-badge { display: inline-block; font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.03em; color: var(--ink-muted); background: var(--sunken); border: 1px dashed var(--rule-strong); border-radius: 10px; padding: 0.04rem 0.4rem; white-space: nowrap; }
+  .placeholder-note { font-family: var(--font-mono); font-size: 0.66rem; color: var(--risk-ink); background: var(--risk-tint); border: 1px dashed color-mix(in srgb, var(--risk) 40%, transparent); border-radius: var(--r-sm); padding: 0.15rem 0.5rem; display: inline-block; }
 
   .rc-toolbar { display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; margin-bottom: 0.9rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--rule); }
   .rc-toolbar-label { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-muted); }
@@ -278,6 +286,7 @@
   .sp-ev-list li::before { content: "•"; position: absolute; left: 0; color: var(--ink-muted); }
   .sp-src-label { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent-soft); margin-bottom: 0.35rem; }
   .sp-src-list { display: flex; flex-direction: column; gap: 0.35rem; }
+  .sp-src-row { display: flex; align-items: center; gap: 0.3rem; flex-wrap: wrap; }
   .sp-src-list a { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; color: var(--accent); text-decoration: none; background: var(--accent-tint); border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent); border-radius: 20px; padding: 0.32rem 0.7rem; width: fit-content; transition: background 0.15s, border-color 0.15s; }
   .sp-src-list a:hover { background: var(--accent-tint-2); border-color: var(--accent-soft); color: var(--accent); }
   .sp-src-list a:active { background: var(--accent-tint-2); }
@@ -483,12 +492,12 @@
           <span>Position</span><span>Sector vs Industry (QoQ)</span><span>Status</span><span>Check</span><span class="r">vs threshold</span>
         </div>
 
-        <button class="pf-row" id="row-MWG" data-nav="card" aria-label="เปิด Thesis Card ของ MWG">
-          <div class="pf-id"><div class="tk">MWG</div><div class="mk">VN · retail</div></div>
-          <div class="pf-claim">Vietnam · ICT &amp; Consumer Electronics retail<span class="ref">Q4'23 QoQ: company −4.2% vs industry +1.5% (<span style="color:var(--broken-ink)">Δ −5.7pp</span>)</span></div>
-          <div class="pf-status"><span class="pill broken"><span class="glyph">■</span> RISK</span></div>
-          <div class="pf-check" data-cc="MWG"></div>
-          <div class="pf-metric"><div class="delta neg">−21%</div><div class="base">vs ≥ 0% YoY</div></div>
+        <button class="pf-row" id="row-HDB" data-nav="card" aria-label="เปิด Thesis Evidence ของ HDB">
+          <div class="pf-id"><div class="tk">HDB</div><div class="mk">VN · banking</div></div>
+          <div class="pf-claim">Vietnam · Banking<span class="ref"><span class="placeholder-note">❌ Sector QoQ: no data yet — brief-data.md §2</span></span></div>
+          <div class="pf-status"><span class="pill risk"><span class="glyph">◆</span> REVIEW</span></div>
+          <div class="pf-check" data-cc="HDB"></div>
+          <div class="pf-metric"><div class="delta warn">+8.0%</div><div class="base">vs 37% FY26 guidance</div></div>
         </button>
 
         <button class="pf-row" id="row-CPALL" aria-label="CPALL">
@@ -533,22 +542,28 @@
       <button class="crumb" data-nav="board">← Portfolio Board</button>
       <div class="stock-hero">
         <div class="lead-col">
-          <h1>Mobile World Group</h1>
+          <h1>HD Commercial Bank (HDBank)</h1>
+          <div class="meta">HDB · Ho Chi Minh (HOSE) · Vietnam · banking</div>
         </div>
         <div class="price-col">
-          <div class="px">VND 42,000</div>
-          <div class="chg">−34% (2023)</div>
+          <div class="px">VND 27,250.00</div>
+          <div class="chg">+100.00 (+0.37%)</div>
         </div>
+      </div>
+
+      <div class="asof-lines">
+        <span class="stamp">🕓 Price as_of 2026-07-17 14:45 GMT+7 · prev close 27,150.00 · day range 26,850.00–27,400.00 · 52w 18,736.99–32,550.00 · mkt cap 136.394T · PE(TTM) 7.94 · EPS(TTM) 3,433.50 · 1y target 32,236.67 <span class="placeholder-note">⚠️ screenshot snapshot, not live feed — re-pull before demo</span></span>
+        <span class="stamp">🕓 Holding weight as_of 2025-04-30 (fund fact-sheet header date) · 12.7% of Alpha Fund industry allocation <span class="placeholder-note">⚠️ doc has internal date conflict — see brief-data.md §7.1</span></span>
       </div>
 
       <div class="section-bar">Thesis evidence</div>
 
-      <div class="moneyshot">
-        <span class="ic">■</span>
-        <div class="tx"><b>🔴 BACKTEST REPLAY · MWG · as_of Q4 2023.</b> Thesis ปี 2022 วางบนธุรกิจหลักที่แข็งแรง (โต ≥0%) และ margin ~21% — ทั้งคู่แตกในสงครามราคา 2023: รายได้ TGDD/DMX <b>−21% YoY</b>, margin <b>19.68% (−132 bp)</b>, กำไรสุทธิ <b>−96%</b> ต่ำสุดใน 10 ปี. ทุก verdict grounded ถึงหน้า/บรรทัด + stamp knowledge_date — ไม่มี lookahead. สงครามราคาเป็นข่าว public นี่ไม่ใช่การเห็นก่อนตลาด แต่เป็น<b>บันทึกที่ตรวจสอบได้ว่าทำไม thesis พัง</b> — discipline ที่คนดู 30 ตัวทำเองไม่ไหว. สัญญาณระบบ: REVISIT (เป็นกลาง) คนเป็นผู้ตัดสิน.</div>
+      <div class="moneyshot review">
+        <span class="ic">◆</span>
+        <div class="tx"><b>◆ REVIEW · HDB · as_of Q1 2026.</b> Thesis เดิมวางบนความแข็งแกร่งของ capital (CAR/LDR/ROE) + credit growth เร็วกว่า sector + IPO catalyst จาก 2 บริษัทลูก — ทั้ง capital/profitability/IPO ยัง <b>INTACT</b> ครบ แต่ 2 ใน 4 เหตุผลเริ่มมี gap กับข้อมูลใหม่ล่าสุด: (1) สินเชื่อโต <b>+8% YTD</b> (annualized ยังตามหลัง trailing เป้าที่บริษัทตั้งไว้จริงคือ <b>37%</b> ไม่ใช่ 35% ตามที่ note เดิมระบุ) ขณะที่ SBV คุมเพดานสินเชื่อทั้งระบบเหลือ 15% (2) NPL ขยับ 1.66%→1.86%, LLR ยังห่างเป้า 75–80% มาก — ยังไม่ breach เกณฑ์หลัก จึงยังไม่ถึง RISK แต่เข้าเกณฑ์สัญญาณ <b>REVIEW</b> ที่ PM ควรพิจารณารอบถัดไป.</div>
       </div>
 
-      <div class="thesis-statement">Thesis เดิม (บันทึกปี 2022): MWG น่าถือเพราะ <b>ธุรกิจหลัก ICT/CE (TGDD + DMX) แข็งแรง</b> — คาดรายได้โต ≥ 0% YoY และ gross margin ยืนราว 21% หนุน re-rating ของ valuation</div>
+      <div class="thesis-statement">Thesis เดิม (บันทึก): HDB น่าถือเพราะ <b>ฐานทุนแข็งแกร่ง (CAR/LDR/ROE) + สินเชื่อโตเร็วกว่า sector + IPO catalyst</b> จาก HD Saison และ HD Securities ในปี 2026</div>
 
       <div class="rc-toolbar">
         <span class="rc-toolbar-label">Priority &amp; filter thesis evidence</span>
@@ -568,15 +583,15 @@
 
       <div id="rc-list">
         <!-- reason 1 -->
-        <div class="reason-card open" data-reason="1" data-priority="1" data-confidence="0.94" data-stars="4" data-load="1" data-review="1">
+        <div class="reason-card open" data-reason="1" data-priority="1" data-confidence="0.90" data-stars="4" data-load="1" data-review="0">
           <div class="reason-toggle" role="button" tabindex="0">
             <span class="reason-num">1</span>
             <span class="reason-title-wrap">
               <span class="reason-eyebrow">Thesis reason 1 · that cause we buy</span><br>
-              <span class="reason-title">Core ICT/CE business strength</span>
+              <span class="reason-title">Capital &amp; profitability strength</span>
             </span>
             <span class="reason-badge">
-              <span class="pill broken sm"><span class="glyph">■</span> RISK</span>
+              <span class="pill intact sm"><span class="glyph">●</span> INTACT</span>
               <span class="stars">★★★★☆</span>
             </span>
             <span class="reason-help" data-help="1" onclick="event.stopPropagation()">?
@@ -602,24 +617,23 @@
                 <!-- support point 1.1 -->
                 <div class="sp" data-sp="1.1">
                   <div class="sp-head">
-                    <span class="t">Support point 1.1 · Revenue growth momentum</span>
-                    <span class="vq-why">◆ adversarial disagreement</span>
+                    <span class="t">Support point 1.1 · Capital adequacy vs threshold</span>
                   </div>
                   <div class="sp-body">
                     <div class="sp-col existing">
                       <div class="sp-col-head">
                         <span class="sp-col-title">Existing<span class="sp-col-sub">ข้อมูลเดิม</span></span>
-                        <span class="pill broken sm"><span class="glyph">■</span> RISK</span>
+                        <span class="pill intact sm"><span class="glyph">●</span> INTACT</span>
                       </div>
-                      <div class="sp-ev-label">Evidence detail support</div>
+                      <div class="sp-ev-label">Evidence detail support · claim: CAR ≥15% AND LDR &lt;72%, FY2026</div>
                       <ul class="sp-ev-list">
-                        <li>รายได้ TGDD+DMX หดตัว −21% YoY แต่ทีมเชื่อว่าเป็นผลจากสงครามราคาระยะสั้น</li>
-                        <li>ผู้บริหารยืนยันในการประชุมนักลงทุนว่าจะฟื้นภายใน 2 ไตรมาส</li>
+                        <li>Q1'26 CAR 16.16%, LDR 69.8% — up sharply from CAR 14.32% a year earlier</li>
                       </ul>
                       <div class="sp-src-label">◇ Source finder</div>
                       <div class="sp-src-list">
-                        <a href="#">→ MWG business-results disclosure · pg 3 · ln 8</a>
-                        <a href="#">→ Brokerage/wire note · pg 2 · ln 5</a>
+                        <div class="sp-src-row"><a href="https://vietnamnews.vn/economy/1780482/hdbank-reports-230-9-million-in-q1-profit-sustaining-strong-profitability-on-a-solid-capital-base.html" target="_blank" rel="noopener">→ HDBank reports $230.9M in Q1 profit, sustaining strong profitability on a solid capital base</a><span class="no-ref-badge">no page ref yet</span></div>
+                        <div class="sp-src-row"><a href="https://trading.vietcap.com.vn/iq/report-detail/en/hdb-management-confident-in-achieving-fy2026-target-while-planning-ipos-of-hd-saison-hd-securities-in-2026-analyst-meeting-note" target="_blank" rel="noopener">→ HDB management confident in achieving FY2026 target while planning IPOs of HD Saison, HD Securities in 2026</a><span class="no-ref-badge">no page ref yet</span></div>
+                        <div class="sp-src-row"><a href="https://finance.yahoo.com/markets/stocks/articles/fitch-ratings-assigns-first-time-092700074.html" target="_blank" rel="noopener">→ Fitch Ratings Assigns First-Time Credit Rating to HDBank, Recognises its Strong Financial Profile</a><span class="no-ref-badge">no page ref yet</span></div>
                       </div>
                     </div>
                     <div class="sp-col upcoming">
@@ -627,15 +641,9 @@
                         <span class="sp-col-title">Upcoming data<span class="sp-col-sub">ข้อมูลที่ขัดแย้งกัน / ข้อมูลใหม่</span></span>
                       </div>
                       <div class="sp-ev-label">Evidence detail support</div>
-                      <ul class="sp-ev-list">
-                        <li>ข้อมูล Q1 2024 เบื้องต้น (ยังไม่ยืนยัน) ชี้ว่ารายได้ยังหดตัวต่อเนื่อง −18% YoY</li>
-                        <li>คู่แข่งรายใหญ่ประกาศขยายสาขาเพิ่ม 30 แห่งในไตรมาสเดียวกัน — อาจเป็นการแย่งส่วนแบ่งตลาดถาวร ไม่ใช่วัฏจักร</li>
-                      </ul>
+                      <ul class="sp-ev-list"><li>ไม่มีข้อมูลใหม่ที่ขัดแย้ง — มีแต่ข้อมูลยืนยันเพิ่มเติม (Fitch first-time rating, Moody's outlook upgrade)</li></ul>
                       <div class="sp-src-label">◇ Source finder</div>
-                      <div class="sp-src-list">
-                        <a href="#">→ Preliminary Q1 2024 wire · 2024-04-10</a>
-                        <a href="#">→ Competitor expansion press release · 2024-03-22</a>
-                      </div>
+                      <div class="sp-src-list"><div class="sp-src-row"><a href="https://vietnamnews.vn/economy/1780716/moody-s-upgrades-hdbank-s-outlook-to-positive-paving-the-way-for-a-rating-upgrade.html" target="_blank" rel="noopener">→ Moody's upgrades HDBank's outlook to "Positive," paving the way for a rating upgrade</a><span class="no-ref-badge">no page ref yet</span></div></div>
                     </div>
                   </div>
                   <div class="sp-foot"><span class="sp-add-note" data-addnote="1.1">เพิ่ม data source ใหม่ได้ในระบบจริง (demo)</span><button class="sp-add-data" data-adddata="1.1">+ Add new data</button></div>
@@ -644,21 +652,20 @@
                 <!-- support point 1.2 -->
                 <div class="sp" data-sp="1.2">
                   <div class="sp-head">
-                    <span class="t">Support point 1.2 · Margin structure vs. competitors</span>
+                    <span class="t">Support point 1.2 · Profitability vs threshold</span>
                   </div>
                   <div class="sp-body">
                     <div class="sp-col existing">
                       <div class="sp-col-head">
                         <span class="sp-col-title">Existing<span class="sp-col-sub">ข้อมูลเดิม</span></span>
-                        <span class="pill risk sm"><span class="glyph">◆</span> REVIEW</span>
+                        <span class="pill intact sm"><span class="glyph">●</span> INTACT</span>
                       </div>
-                      <div class="sp-ev-label">Evidence detail support</div>
+                      <div class="sp-ev-label">Evidence detail support · claim: ROE ≥23% AND ROA ≥2%, FY2026</div>
                       <ul class="sp-ev-list">
-                        <li>Margin structure เดิมเชื่อว่าแข็งแรงกว่าคู่แข่งรายย่อยจาก scale + sourcing power</li>
-                        <li>เครือข่ายสาขาครอบคลุมทั่วประเทศเป็นข้อได้เปรียบเชิงต้นทุน</li>
+                        <li>Q1'26 ROE 24.29% (PBT VND6,107bn, +14% YoY)</li>
                       </ul>
                       <div class="sp-src-label">◇ Source finder</div>
-                      <div class="sp-src-list"><a href="#">→ Analyst margin-bridge note · 07 · 01:12</a></div>
+                      <div class="sp-src-list"><div class="sp-src-row"><a href="https://vietnamnews.vn/economy/1780482/hdbank-reports-230-9-million-in-q1-profit-sustaining-strong-profitability-on-a-solid-capital-base.html" target="_blank" rel="noopener">→ HDBank reports $230.9M in Q1 profit, sustaining strong profitability on a solid capital base</a><span class="no-ref-badge">no page ref yet</span></div></div>
                     </div>
                     <div class="sp-col upcoming">
                       <div class="sp-col-head">
@@ -676,19 +683,19 @@
             </div>
 
             <div class="claim-meta" style="margin-top:0.9rem;">
-              <span class="stamp">🕓 as_of Q4 2023 · known 2023-11</span>
-              <span class="decay">confidence 0.94<span class="sep">·</span><span class="bar"><i style="width:58%"></i></span>42/100d to STALE</span>
+              <span class="stamp">🕓 as_of Q1 2026 · known 2026-05-05</span>
+              <span class="decay">confidence 0.90<span class="sep">·</span><span class="bar"><i style="width:73%"></i></span>73/100d to STALE</span>
             </div>
           </div>
         </div>
 
         <!-- reason 2 -->
-        <div class="reason-card" data-reason="2" data-priority="2" data-confidence="0.91" data-stars="3" data-load="1" data-review="1">
+        <div class="reason-card" data-reason="2" data-priority="2" data-confidence="0.70" data-stars="3" data-load="1" data-review="1">
           <div class="reason-toggle" role="button" tabindex="0">
             <span class="reason-num">2</span>
             <span class="reason-title-wrap">
               <span class="reason-eyebrow">Thesis reason 2 · that cause we buy</span><br>
-              <span class="reason-title">Margin recovery via management guidance</span>
+              <span class="reason-title">Credit growth reaching FY2026 target</span>
             </span>
             <span class="reason-badge">
               <span class="pill risk sm"><span class="glyph">◆</span> REVIEW</span>
@@ -712,7 +719,7 @@
               <div class="sp-stack">
                 <div class="sp" data-sp="2.1">
                   <div class="sp-head">
-                    <span class="t">Support point 2.1 · Guidance delivery track record</span>
+                    <span class="t">Support point 2.1 · Loan growth run-rate vs management guidance</span>
                     <span class="vq-why">◆ adversarial disagreement</span>
                   </div>
                   <div class="sp-body">
@@ -721,13 +728,13 @@
                         <span class="sp-col-title">Existing<span class="sp-col-sub">ข้อมูลเดิม</span></span>
                         <span class="pill risk sm"><span class="glyph">◆</span> REVIEW</span>
                       </div>
-                      <div class="sp-ev-label">Evidence detail support</div>
+                      <div class="sp-ev-label">Evidence detail support · claim: loan growth ≥37% FY2026 (mgmt guidance) <span class="placeholder-note">⚠️ corrected from research note's original "35%"</span></div>
                       <ul class="sp-ev-list">
-                        <li>ผู้บริหาร guide ไว้ต้นปี 2023 ว่า gross margin จะกลับไปยืนที่ระดับ ~21% ภายในสิ้นปี</li>
-                        <li>ผ่าน cost-control program และปรับ product mix ที่ประกาศ timeline ไว้ชัดเจน</li>
+                        <li>Q1'26 loans +8% YTD, ~2.5x the sector average of 3.18%</li>
+                        <li>Management guided 37% credit growth + 41% PBT growth (~VND30,100bn) for FY2026 at the same release</li>
                       </ul>
                       <div class="sp-src-label">◇ Source finder</div>
-                      <div class="sp-src-list"><a href="#">→ MWG Q4 2023 financials · pg 6 · ln 3</a></div>
+                      <div class="sp-src-list"><div class="sp-src-row"><a href="https://vietnamnews.vn/economy/1780482/hdbank-reports-230-9-million-in-q1-profit-sustaining-strong-profitability-on-a-solid-capital-base.html" target="_blank" rel="noopener">→ HDBank reports $230.9M in Q1 profit, sustaining strong profitability on a solid capital base</a><span class="no-ref-badge">no page ref yet</span></div></div>
                     </div>
                     <div class="sp-col upcoming">
                       <div class="sp-col-head">
@@ -735,11 +742,14 @@
                       </div>
                       <div class="sp-ev-label">Evidence detail support</div>
                       <ul class="sp-ev-list">
-                        <li>Analyst margin-bridge note ชี้ว่า mix shift + price war ยังกด margin ต่อเนื่อง −132 bp</li>
-                        <li>Timeline ตาม guidance เดิมอาจไม่ทัน — ยังไม่มีสัญญาณ recovery ชัดใน Q4</li>
+                        <li>SBV set the 2026 sector-wide credit growth quota at 15% (down from 19.1% in 2025)</li>
+                        <li>SBV separately capped real-estate lending growth at each bank's own overall credit-growth rate — a system-wide ceiling that constrains how far above-average growth HDB can sustain</li>
                       </ul>
                       <div class="sp-src-label">◇ Source finder</div>
-                      <div class="sp-src-list"><a href="#">→ Analyst margin-bridge note · 07 · 01:12</a></div>
+                      <div class="sp-src-list">
+                        <a href="https://vietnamnet.vn/en/vietnam-targets-15-credit-growth-in-2026-with-tighter-real-estate-control-2480915.html" target="_blank" rel="noopener">→ Vietnam targets 15% credit growth in 2026 with tighter real estate control</a>
+                        <a href="https://vietnamnews.vn/economy/1763813/sbv-asks-to-place-real-estate-credit-growth-under-tight-control.html" target="_blank" rel="noopener">→ SBV asks to place real estate credit growth under tight control</a>
+                      </div>
                     </div>
                   </div>
                   <div class="sp-foot"><span class="sp-add-note" data-addnote="2.1">เพิ่ม data source ใหม่ได้ในระบบจริง (demo)</span><button class="sp-add-data" data-adddata="2.1">+ Add new data</button></div>
@@ -748,23 +758,23 @@
             </div>
 
             <div class="claim-meta" style="margin-top:0.9rem;">
-              <span class="stamp">🕓 as_of Q4 2023 · known 2024-01-29</span>
-              <span class="decay">confidence 0.91<span class="sep">·</span><span class="bar"><i style="width:72%"></i></span>72/100d to STALE</span>
+              <span class="stamp">🕓 as_of Q1 2026 · known 2026-04-30</span>
+              <span class="decay">confidence 0.70<span class="sep">·</span><span class="bar"><i style="width:78%"></i></span>78/100d to STALE</span>
             </div>
           </div>
         </div>
 
         <!-- reason 3 -->
-        <div class="reason-card" data-reason="3" data-priority="3" data-confidence="0.86" data-stars="4" data-load="0" data-review="0">
+        <div class="reason-card" data-reason="3" data-priority="3" data-confidence="0.65" data-stars="3" data-load="1" data-review="1">
           <div class="reason-toggle" role="button" tabindex="0">
             <span class="reason-num">3</span>
             <span class="reason-title-wrap">
               <span class="reason-eyebrow">Thesis reason 3 · that cause we buy</span><br>
-              <span class="reason-title">Store network &amp; online growth runway</span>
+              <span class="reason-title">Asset quality resilience</span>
             </span>
             <span class="reason-badge">
-              <span class="pill intact sm"><span class="glyph">●</span> INTACT</span>
-              <span class="stars">★★★★☆</span>
+              <span class="pill risk sm"><span class="glyph">◆</span> REVIEW</span>
+              <span class="stars">★★★☆☆</span>
             </span>
             <span class="reason-help" data-help="3" onclick="event.stopPropagation()">?
               <div class="reason-help-pop" id="help-pop-3"></div>
@@ -783,29 +793,37 @@
               <div class="sp-rail"><div class="dot">3.1</div></div>
               <div class="sp-stack">
                 <div class="sp" data-sp="3.1">
-                  <div class="sp-head"><span class="t">Support point 3.1 · Online GMV growth vs. industry</span></div>
+                  <div class="sp-head">
+                    <span class="t">Support point 3.1 · NPL &amp; loan-loss coverage vs FY2026 plan</span>
+                    <span class="vq-why">◆ adversarial disagreement</span>
+                  </div>
                   <div class="sp-body">
                     <div class="sp-col existing">
                       <div class="sp-col-head">
                         <span class="sp-col-title">Existing<span class="sp-col-sub">ข้อมูลเดิม</span></span>
-                        <span class="pill intact sm"><span class="glyph">●</span> INTACT</span>
+                        <span class="pill risk sm"><span class="glyph">◆</span> REVIEW</span>
                       </div>
-                      <div class="sp-ev-label">Evidence detail support</div>
+                      <div class="sp-ev-label">Evidence detail support · claim: NPL &lt;2% AND LLR ≈75–80%, FY2026</div>
                       <ul class="sp-ev-list">
-                        <li>แผนขยายสาขาต่อเนื่องปีละ ~150–200 สาขา</li>
-                        <li>Online GMV +38% YoY เร็วกว่าค่าเฉลี่ยอุตสาหกรรม ~1.5 เท่า ตาม capex plan fulfilment ที่ประกาศแล้ว</li>
+                        <li>Thesis assumed a strong, improving balance sheet as one of HDB's structural strengths</li>
                       </ul>
                       <div class="sp-src-label">◇ Source finder</div>
-                      <div class="sp-src-list"><a href="#">→ Company investor-day deck · pg 14</a></div>
+                      <div class="sp-src-list"><div class="sp-src-row"><a href="https://trading.vietcap.com.vn/iq/report-detail/en/hdb-management-confident-in-achieving-fy2026-target-while-planning-ipos-of-hd-saison-hd-securities-in-2026-analyst-meeting-note" target="_blank" rel="noopener">→ HDB management confident in achieving FY2026 target while planning IPOs of HD Saison, HD Securities in 2026</a><span class="no-ref-badge">no page ref yet</span></div></div>
                     </div>
                     <div class="sp-col upcoming">
                       <div class="sp-col-head">
                         <span class="sp-col-title">Upcoming data<span class="sp-col-sub">ข้อมูลที่ขัดแย้งกัน / ข้อมูลใหม่</span></span>
                       </div>
                       <div class="sp-ev-label">Evidence detail support</div>
-                      <ul class="sp-ev-list"><li>ยังไม่มีข้อมูลใหม่ที่ขัดแย้งในประเด็นนี้ — เฝ้าติดตามต่อ</li></ul>
+                      <ul class="sp-ev-list">
+                        <li>NPL rose to 1.86% in Q1'26 from 1.66% at FY2025 — moving toward, not away from, the 2% ceiling</li>
+                        <li>LLR sits around ~50%, well short of the 75–80% plan. Sector-wide, 2025's stable NPL numbers were propped up by write-offs/recoveries rather than organic improvement, and that support is expected to fade in 2026</li>
+                      </ul>
                       <div class="sp-src-label">◇ Source finder</div>
-                      <div class="sp-src-list"><span class="sp-src-empty">— รอข้อมูลเพิ่ม —</span></div>
+                      <div class="sp-src-list">
+                        <div class="sp-src-row"><a href="https://vietnamnews.vn/economy/1780482/hdbank-reports-230-9-million-in-q1-profit-sustaining-strong-profitability-on-a-solid-capital-base.html" target="_blank" rel="noopener">→ HDBank reports $230.9M in Q1 profit, sustaining strong profitability on a solid capital base</a><span class="no-ref-badge">no page ref yet</span></div>
+                        <div class="sp-src-row"><a href="https://fiinratings.vn/en/news-fg/banking-sector-2026-spotlight-capital-strength-and-liquidity-will-shape-vietnam-banking-outlook-id2772252.html" target="_blank" rel="noopener">→ Banking Sector 2026 Spotlight: Capital Strength and Liquidity Will Shape Vietnam Banking Outlook</a><span class="no-ref-badge">no page ref yet</span></div>
+                      </div>
                     </div>
                   </div>
                   <div class="sp-foot"><span class="sp-add-note" data-addnote="3.1">เพิ่ม data source ใหม่ได้ในระบบจริง (demo)</span><button class="sp-add-data" data-adddata="3.1">+ Add new data</button></div>
@@ -814,15 +832,83 @@
             </div>
 
             <div class="claim-meta" style="margin-top:0.9rem;">
-              <span class="stamp">🕓 as_of Q4 2023 · known 2024-01-29</span>
-              <span class="decay">confidence 0.86<span class="sep">·</span><span class="bar"><i style="width:35%"></i></span>18/30d to STALE</span>
+              <span class="stamp">🕓 as_of Q1 2026 · known 2026-04-30</span>
+              <span class="decay">confidence 0.65<span class="sep">·</span><span class="bar"><i style="width:78%"></i></span>78/100d to STALE</span>
             </div>
           </div>
         </div>
       </div>
 
       <button class="rc-more" id="rc-more-btn"><span class="chev">⌄</span> Show more thesis support</button>
-      <div class="rc-more-body" id="rc-more-body"><div class="rc-nodata">No data available</div></div>
+      <div class="rc-more-body" id="rc-more-body">
+        <div class="reason-card" data-reason="4" data-priority="4" data-confidence="0.80" data-stars="4" data-load="0" data-review="0">
+          <div class="reason-toggle" role="button" tabindex="0">
+            <span class="reason-num">4</span>
+            <span class="reason-title-wrap">
+              <span class="reason-eyebrow">Thesis reason 4 · that cause we buy</span><br>
+              <span class="reason-title">IPO catalyst: SOTP unlock</span>
+            </span>
+            <span class="reason-badge">
+              <span class="pill intact sm"><span class="glyph">●</span> INTACT</span>
+              <span class="stars">★★★★☆</span>
+            </span>
+            <span class="reason-help" data-help="4" onclick="event.stopPropagation()">?
+              <div class="reason-help-pop" id="help-pop-4"></div>
+            </span>
+            <div class="reason-edit-wrap" data-editwrap="4" onclick="event.stopPropagation()">
+              <button class="reason-edit" data-edit="4">✎ Edit<span class="reason-edit-mode" data-editmode="4"></span></button>
+              <div class="reason-edit-menu">
+                <button data-editchoice="4" data-mode="file">📎 Add file / picture</button>
+                <button data-editchoice="4" data-mode="text">✏️ Edit text manually</button>
+              </div>
+            </div>
+            <span class="reason-chev">▶</span>
+          </div>
+          <div class="reason-body">
+            <div class="sp-list">
+              <div class="sp-rail"><div class="dot">4.1</div></div>
+              <div class="sp-stack">
+                <div class="sp" data-sp="4.1">
+                  <div class="sp-head"><span class="t">Support point 4.1 · HD Saison &amp; HD Securities IPO plans</span></div>
+                  <div class="sp-body">
+                    <div class="sp-col existing">
+                      <div class="sp-col-head">
+                        <span class="sp-col-title">Existing<span class="sp-col-sub">ข้อมูลเดิม</span></span>
+                        <span class="pill intact sm"><span class="glyph">●</span> INTACT</span>
+                      </div>
+                      <div class="sp-ev-label">Evidence detail support · claim: HDS IPO ~Sep 2026 AND HD Saison IPO in 2026</div>
+                      <ul class="sp-ev-list">
+                        <li>HDS stake plan 51%–90% ahead of a targeted Sept 2026 IPO; HDS 2025 PBT +94.8% (Q1'26 HDS revenue +89% YoY, after-tax profit +261% YoY per the Q1 release)</li>
+                        <li>HD Saison converting to a joint-stock company ahead of a 2026 IPO; HD Saison Q1'26 profit VND339bn</li>
+                      </ul>
+                      <div class="sp-src-label">◇ Source finder</div>
+                      <div class="sp-src-list">
+                        <div class="sp-src-row"><a href="https://trading.vietcap.com.vn/iq/report-detail/en/hdb-management-confident-in-achieving-fy2026-target-while-planning-ipos-of-hd-saison-hd-securities-in-2026-analyst-meeting-note" target="_blank" rel="noopener">→ HDB management confident in achieving FY2026 target while planning IPOs of HD Saison, HD Securities in 2026</a><span class="no-ref-badge">no page ref yet</span></div>
+                        <div class="sp-src-row"><a href="https://vietnamnews.vn/economy/1780482/hdbank-reports-230-9-million-in-q1-profit-sustaining-strong-profitability-on-a-solid-capital-base.html" target="_blank" rel="noopener">→ HDBank reports $230.9M in Q1 profit, sustaining strong profitability on a solid capital base</a><span class="no-ref-badge">no page ref yet</span></div>
+                      </div>
+                    </div>
+                    <div class="sp-col upcoming">
+                      <div class="sp-col-head">
+                        <span class="sp-col-title">Upcoming data<span class="sp-col-sub">ข้อมูลที่ขัดแย้งกัน / ข้อมูลใหม่</span></span>
+                      </div>
+                      <div class="sp-ev-label">Evidence detail support</div>
+                      <ul class="sp-ev-list"><li>ไม่มีข้อมูลใหม่ที่ขัดแย้ง — มีแต่ข้อมูลยืนยันเพิ่มเติม: Fitch/Moody's ทั้งคู่อ้างถึงแผนเพิ่มทุน VND78.3tn–110.1tn (+41%) ที่อนุมัติในการประชุม AGM 2026 เป็นปัจจัยบวก</li></ul>
+                      <div class="sp-src-label">◇ Source finder</div>
+                      <div class="sp-src-list"><div class="sp-src-row"><a href="https://vietnamnews.vn/economy/1780716/moody-s-upgrades-hdbank-s-outlook-to-positive-paving-the-way-for-a-rating-upgrade.html" target="_blank" rel="noopener">→ Moody's upgrades HDBank's outlook to "Positive," paving the way for a rating upgrade</a><span class="no-ref-badge">no page ref yet</span></div></div>
+                    </div>
+                  </div>
+                  <div class="sp-foot"><span class="sp-add-note" data-addnote="4.1">เพิ่ม data source ใหม่ได้ในระบบจริง (demo)</span><button class="sp-add-data" data-adddata="4.1">+ Add new data</button></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="claim-meta" style="margin-top:0.9rem;">
+              <span class="stamp">🕓 as_of Q1 2026 · known 2026-05-05</span>
+              <span class="decay">confidence 0.80<span class="sep">·</span><span class="bar"><i style="width:73%"></i></span>73/100d to STALE</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <!-- decision panel -->
       <div class="decision-panel">
@@ -911,14 +997,14 @@
         <div class="spec-head"><span class="t">Queue</span><span class="c">1 item · needs a human</span></div>
         <div class="vq-item">
           <div class="vq-top">
-            <div><div class="vq-claim">“โทน outlook ผู้บริหาร — สงครามราคาเป็นเชิงโครงสร้างหรือเชิงวัฏจักร”</div><div class="vq-co">MWG · Vietnam · claim C3 · qualitative · <span class="stamp">as_of Q4 2023 · known 2024-01-29</span></div></div>
+            <div><div class="vq-claim">“Governance / related-party concentration — Sovico Group ownership overlap”</div><div class="vq-co">HDB · Vietnam · qualitative · no numeric threshold · <span class="stamp">as_of 2024-01 · known 2024-01-20 <span class="placeholder-note">⚠️ stale — not Q1'26 data, don't present as current</span></span></div></div>
             <span class="vq-why">◆ adversarial disagreement</span>
           </div>
           <div class="debate">
-            <div class="model a"><div class="mh"><span class="mname">Model · adjudicator</span><span class="pill risk sm"><span class="glyph">◆</span> REVIEW</span></div><div class="arg">ภาษาชี้ว่าการกดดัน margin เป็น<b>เชิงโครงสร้าง</b> — สงครามราคา ICT เปลี่ยนเศรษฐศาสตร์ของธุรกิจหลักถาวร ไม่ใช่รอบสั้น ๆ</div></div>
-            <div class="model b"><div class="mh"><span class="mname">Model · adversarial</span><span class="pill intact sm"><span class="glyph">●</span> INTACT</span></div><div class="arg">ผู้บริหารกรอบว่าเป็น<b>เชิงวัฏจักร</b> — เมื่อ demand ฟื้น margin จะกลับ ไม่พอสรุปว่า thesis พังเชิงโครงสร้าง</div></div>
+            <div class="model a"><div class="mh"><span class="mname">Model · adjudicator</span><span class="pill risk sm"><span class="glyph">◆</span> REVIEW</span></div><div class="arg">Sovico Group ถือหุ้นใหญ่สุดใน HDB (~14.3–14.5%) และกลุ่มผู้ถือหุ้นเดียวกัน (Nguyễn Thị Phương Thảo / Sovico) ยังคุม Vietjet Air และมีสินทรัพย์อสังหาริมทรัพย์ (เช่น Phú Long) — เป็น <b>indirect cross-sector concentration risk</b> ที่ควรตรวจสอบ</div></div>
+            <div class="model b"><div class="mh"><span class="mname">Model · adversarial</span><span class="pill intact sm"><span class="glyph">●</span> INTACT</span></div><div class="arg">สัดส่วนหุ้นนี้เปิดเผยเป็นสาธารณะและเป็นโครงสร้างปกติของธนาคารเวียดนามหลายแห่งที่ผูกกับ conglomerate — แหล่งข้อมูลที่อ้างไม่มีหลักฐานตรงว่ามีการแทรกแซงธรรมาภิบาลหรือการปล่อยสินเชื่อของ HDB</div></div>
           </div>
-          <div class="vq-evidence"><span class="tier">public</span><span>MD&amp;A / earnings-call Q4 2023 — ย่อหน้า outlook, ประโยคที่ 3</span><a class="trace" href="#">→ pg 9 · ln 2</a></div>
+          <div class="vq-evidence"><span class="tier">public</span><span>Institutional shareholders holding over 10% stake in seven Vietnam banks</span><a class="trace" href="https://theinvestor.vn/institutional-shareholders-holding-over-10-stake-in-seven-vietnam-banks-d8307.html" target="_blank" rel="noopener">→ theinvestor.vn</a><span class="no-ref-badge">no page ref yet</span></div>
           <div class="decision-row">
             <div class="decision-label">คำตัดสินของคน — เขียนลง decision log (append-only) · decided_by = คน</div>
             <div class="decision-btns">
@@ -947,7 +1033,8 @@
     var VERDICT_ORDER = ["broken", "risk", "stale", "intact"]; // worst-first, matches board ordering
 
     var POSITIONS = [
-      { ticker: "MWG",   market: "VN", verdict: "broken", totalDataPoints: 25, pendingDataPoints: 6, avgConfidence: 0.82 },
+      // HDB avgConfidence is a PLACEHOLDER (brief-data.md §2) — not derived from the real pipeline yet, don't present as real in a demo
+      { ticker: "HDB",   market: "VN", verdict: "risk",   totalDataPoints: 19, pendingDataPoints: 2, avgConfidence: 0.85 },
       { ticker: "CPALL", market: "TH", verdict: "risk",    totalDataPoints: 18, pendingDataPoints: 2, avgConfidence: 0.88 },
       { ticker: "ERAA",  market: "ID", verdict: "stale",   totalDataPoints: 14, pendingDataPoints: 3, avgConfidence: 0.55 },
       { ticker: "BBCA",  market: "ID", verdict: "intact",  totalDataPoints: 22, pendingDataPoints: 1, avgConfidence: 0.90 },
